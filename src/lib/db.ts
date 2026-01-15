@@ -13,14 +13,13 @@ if (!cached) {
 }
 
 const connectdb = async () => {
-  // FIX: Return cached connection if it exists
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false, // Disable buffering
+      bufferCommands: false, 
     };
 
     cached.promise = mongoose.connect(mongodbUrl, opts).then((mongoose) => {
@@ -32,7 +31,7 @@ const connectdb = async () => {
     cached.conn = await cached.promise;
     return cached.conn;
   } catch (error) {
-    cached.promise = null; // Reset promise on error
+    cached.promise = null; 
     throw error;
   }
 };
