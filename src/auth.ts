@@ -55,4 +55,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+  },
+
+  secret: process.env.AUTH_SECRET,
 });
