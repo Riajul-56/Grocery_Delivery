@@ -14,14 +14,14 @@ export async function POST(req: NextRequest) {
     if (existsUser) {
       return NextResponse.json(
         { message: "Email already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
         { message: "Password must be at least 6 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { message: `Registration failed: ${error}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
