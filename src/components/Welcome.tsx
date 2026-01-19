@@ -2,7 +2,11 @@
 import { ArrowRight, BikeIcon, ShoppingBasket } from "lucide-react";
 import { motion } from "motion/react";
 
-const Welcome = () => {
+type propType = {
+  nextStep: (step: number) => void;
+};
+
+const Welcome = ({ nextStep }: propType) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-6">
       <motion.div
@@ -76,7 +80,8 @@ const Welcome = () => {
           duration: 0.6,
           delay: 0.8,
         }}
-        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-8 rounded-2xl shadow-md transition-all duration-200 mt-10"
+        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-8 rounded-2xl shadow-md transition-all duration-200 mt-10 cursor-pointer"
+        onClick={() => nextStep(2)}
       >
         Next
         <ArrowRight />

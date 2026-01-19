@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Glocery Delivery App",
-  description: "Grocery Delivery App built with Next.js, MongoDB, and NextAuth.js",
+  title: "Grocery Delivery App",
+  description:
+    "Grocery Delivery App built with Next.js, MongoDB, and NextAuth.js",
 };
 
 export default function RootLayout({
