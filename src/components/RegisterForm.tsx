@@ -4,11 +4,14 @@ import {
   EyeOff,
   Leaf,
   Lock,
+  LogIn,
   Mail,
   User,
 } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
+import googleImage from "../assets/google.png";
 
 type propType = {
   previousStep: (step: number) => void;
@@ -47,9 +50,21 @@ const RegisterForm = ({ previousStep }: propType) => {
         Create Account
       </motion.h1>
 
-      <p className="text-gray-600 mb-8 flex items-center gap-2">
+      <motion.p
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.6,
+          delay: 0.3,
+        }}
+        className="text-gray-600 mb-8 flex items-center gap-2"
+      >
         Join Snapcart today <Leaf className="w-5 h-5 text-green-600" />{" "}
-      </p>
+      </motion.p>
 
       <motion.form
         initial={{
@@ -63,34 +78,40 @@ const RegisterForm = ({ previousStep }: propType) => {
           delay: 0.3,
         }}
       >
+        {/* ===================== Name Input========================= */}
+
         <div className="relative">
           <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
           <input
             type="text"
             placeholder="Enter Your Name"
-            className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
         </div>
+
+        {/* ===================== Email Input========================= */}
 
         <div className="relative mt-4">
           <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
           <input
             type="email"
             placeholder="Enter Your Email"
-            className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
         </div>
+
+        {/* ===================== Password Input========================= */}
 
         <div className="relative mt-4">
           <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Enter Your Password"
-            className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
@@ -107,10 +128,13 @@ const RegisterForm = ({ previousStep }: propType) => {
           )}
         </div>
 
+        {/* ===================== Confirm Password Input========================= */}
+
         {(() => {
           const formValidation = name !== "" && email !== "" && password !== "";
           return (
             <button
+              disabled={!formValidation}
               className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex iitems-center justify-center gap-2 mt-3.5 ${
                 formValidation
                   ? "bg-green-500 hover:bg-green-700 text-white"
@@ -121,7 +145,26 @@ const RegisterForm = ({ previousStep }: propType) => {
             </button>
           );
         })()}
+
+        {/* =========================== OR Border ========================*/}
+
+        <div className="flex items-center gap-2 text-gray-400 text-sm mt-3.5">
+          <span className="flex-1 h-px bg-gray-200"></span>
+          OR
+          <span className="flex-1 h-px bg-gray-200"></span>
+        </div>
+
+        {/* =========================== Google Sign In Button ========================*/}
+
+        <button className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5">
+          <Image src={googleImage} alt="Google" width={20} height={20} />
+          Continue with Google
+        </button>
       </motion.form>
+
+      <p className="text-gray-600 mt-6 text-sm flex items-center gap-1 cursor-pointer">
+        Already have an account? <LogIn className="w-4 h-4" /> <span className="text-green-600">Sign In</span>
+      </p>
     </div>
   );
 };
