@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
 import googleImage from "../assets/google.png";
+import axios from "axios";
 
 type propType = {
   previousStep: (step: number) => void;
@@ -22,6 +23,20 @@ const RegisterForm = ({ previousStep }: propType) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await axios.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      });
+      console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative">
@@ -67,6 +82,7 @@ const RegisterForm = ({ previousStep }: propType) => {
       </motion.p>
 
       <motion.form
+        onSubmit={handleRegister}
         initial={{
           opacity: 0,
         }}
@@ -163,7 +179,8 @@ const RegisterForm = ({ previousStep }: propType) => {
       </motion.form>
 
       <p className="text-gray-600 mt-6 text-sm flex items-center gap-1 cursor-pointer">
-        Already have an account? <LogIn className="w-4 h-4" /> <span className="text-green-600">Sign In</span>
+        Already have an account? <LogIn className="w-4 h-4" />{" "}
+        <span className="text-green-600">Sign In</span>
       </p>
     </div>
   );
