@@ -162,8 +162,10 @@ const RegisterForm = ({ previousStep }: propType) => {
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              {loading ? <Loader2 />}
-              Register
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) :"Register"
+              }
             </button>
           );
         })()}
