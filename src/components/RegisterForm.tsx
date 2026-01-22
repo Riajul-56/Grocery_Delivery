@@ -3,6 +3,7 @@ import {
   EyeIcon,
   EyeOff,
   Leaf,
+  Loader2,
   Lock,
   LogIn,
   Mail,
@@ -23,9 +24,11 @@ const RegisterForm = ({ previousStep }: propType) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const result = await axios.post("/api/auth/register", {
         name,
@@ -33,8 +36,10 @@ const RegisterForm = ({ previousStep }: propType) => {
         password,
       });
       console.log(result.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -150,13 +155,14 @@ const RegisterForm = ({ previousStep }: propType) => {
           const formValidation = name !== "" && email !== "" && password !== "";
           return (
             <button
-              disabled={!formValidation}
+              disabled={!formValidation || loading}
               className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex iitems-center justify-center gap-2 mt-3.5 ${
                 formValidation
                   ? "bg-green-500 hover:bg-green-700 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
+              {loading ? <Loader2 />}
               Register
             </button>
           );
