@@ -11,9 +11,11 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import googleImage from "@/assets/google.png";
 import { useRouter } from "next/navigation";
+import { sign } from "crypto";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +23,22 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleLogin = async (e:FormEvent) => {
+    e.preventDefault();
+    if(email && password){
+      setLoading(true);
+    try{
+      await signIn("credentials", {
+        email,password
+      })
+      setLoading(false);
+    }catch(error){
+      console.log("Login error", error);
+      setLoading(false);
+    }
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative">
@@ -58,6 +76,7 @@ const Login = () => {
       </motion.p>
 
       <motion.form
+      onSubmit={handleLogin}
         initial={{
           opacity: 0,
         }}
