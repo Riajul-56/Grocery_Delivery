@@ -30,22 +30,13 @@ function Login() {
     if (email && password) {
       setLoading(true);
       try {
-        const result = await signIn("credentials", {
+        await signIn("credentials", {
           email,
           password,
-          redirect: false,
         });
-
-        if (result?.error) {
-          console.log("Login failed:", result.error);
-        } else if (result?.ok) {
-          console.log("Login successful!");
-          router.refresh(); 
-          router.push("/dashboard");
-        }
+        setLoading(false);
       } catch (error) {
         console.log("Login error", error);
-      } finally {
         setLoading(false);
       }
     }
@@ -165,7 +156,10 @@ function Login() {
 
         {/* =========================== Google Sign In Button ========================*/}
 
-        <button className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-100 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer">
+        <button
+          className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-100 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer"
+          onClick={() => signIn("google")}
+        >
           <Image src={googleImage} alt="Google" width={20} height={20} />
           Continue with Google
         </button>

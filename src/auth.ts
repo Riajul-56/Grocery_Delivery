@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import connectdb from "./lib/db";
 import User from "./models/user.model";
 import bcrypt from "bcryptjs";
 import Google from "next-auth/providers/google";
+import connectdb from "./lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -50,18 +50,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       if(account?.provider === "google") {
         await connectdb();
-        let DbUser = await User.findOne({ email: user.email });
-        if (!DbUser) {
-           DbUser = await User.create({
+        let dbUser = await User.findOne({ email: user.email });
+        if (!dbUser) {
+           dbUser = await User.create({
             name: user.name,
             email: user.email,
             image: user.image,
             
           });
-          await DbUser.save();
         }
-        user.id = DbUser._id.toString();
-        user.role = DbUser.role;
+        user.id = dbUser._id.toString();
+        user.role = dbUser.role;
       }
       return true;
     },
