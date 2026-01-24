@@ -7,38 +7,49 @@ import {
   Lock,
   LogIn,
   Mail,
-  User,
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import googleImage from "@/assets/google.png";
 import { useRouter } from "next/navigation";
-import { sign } from "crypto";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
-const Login = () => {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e:FormEvent) => {
+  const session = useSession();
+  console.log(session);
+
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    if(email && password){
+    if (email && password) {
       setLoading(true);
-    try{
-      await signIn("credentials", {
-        email,password
-      })
-      setLoading(false);
-    }catch(error){
-      console.log("Login error", error);
-      setLoading(false);
+      try {
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          console.log("Login failed:", result.error);
+        } else if (result?.ok) {
+          console.log("Login successful!");
+          router.refresh(); 
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.log("Login error", error);
+      } finally {
+        setLoading(false);
+      }
     }
-    }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative">
@@ -76,7 +87,7 @@ const Login = () => {
       </motion.p>
 
       <motion.form
-      onSubmit={handleLogin}
+        onSubmit={handleLogin}
         initial={{
           opacity: 0,
         }}
@@ -131,8 +142,9 @@ const Login = () => {
           const formValidation = email !== "" && password !== "";
           return (
             <button
+              type="submit"
               disabled={!formValidation || loading}
-              className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex iitems-center justify-center gap-2 mt-3.5 ${
+              className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex items-center justify-center gap-2 mt-3.5 ${
                 formValidation
                   ? "bg-green-500 hover:bg-green-700 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -168,6 +180,6 @@ const Login = () => {
       </p>
     </div>
   );
-};
+}
 
 export default Login;
