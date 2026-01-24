@@ -3,9 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import connectdb from "./lib/db";
 import User from "./models/user.model";
 import bcrypt from "bcryptjs";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    //? ================= credentials provider for email/password authentication =================
+
     Credentials({
       credentials: {
         email: { label: "email", type: "email" },
@@ -32,10 +35,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
+
+    //? ================= Google Provider =================
+
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
 
+  //? ================= callbacks =================
+
   callbacks: {
-    //token er modhe user er information rakha hoy
+    async signIn({ user, account }) {
+      if(account?.provider === "google") {
+        await connectdb();
+        let DbUser = await User.findOne({ email: user.email });
+        if (!DbUser) {
+           DbUser = await User.create({
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            
+          });
+          await DbUser.save();
+        }
+        user.id = DbUser._id.toString();
+        user.role = DbUser.role;
+      }
+      return true;
+    },
+
+    //?token er modhe user er information rakha hoy
     jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -45,6 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
+
     session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -56,11 +88,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 
+  //? ================= pages =================
+
   pages: {
     signIn: "/login",
     error: "/login",
   },
 
+  //? ================= session & secret =================
   session: {
     strategy: "jwt",
     maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
