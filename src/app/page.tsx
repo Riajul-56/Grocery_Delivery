@@ -1,8 +1,6 @@
-import Register from "./register/page";
-
 const page = () => {
   return(
-    <Register/>
+ <h1>page</h1>
   )
 };
 
