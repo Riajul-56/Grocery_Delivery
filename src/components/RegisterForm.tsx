@@ -38,7 +38,7 @@ const RegisterForm = ({ previousStep }: propType) => {
         email,
         password,
       });
-      console.log(result.data);
+      router.push("/login");
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -184,10 +184,13 @@ const RegisterForm = ({ previousStep }: propType) => {
 
         {/* =========================== Google Sign In Button ========================*/}
 
-        <button className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer" onClick={()=>signIn("google")}>
+        <div
+          className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+        >
           <Image src={googleImage} alt="Google" width={20} height={20} />
           Continue with Google
-        </button>
+        </div>
       </motion.form>
 
       <p

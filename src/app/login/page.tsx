@@ -34,6 +34,8 @@ function Login() {
           email,
           password,
         });
+        router.push("/");
+
         setLoading(false);
       } catch (error) {
         console.log("Login error", error);
@@ -156,13 +158,13 @@ function Login() {
 
         {/* =========================== Google Sign In Button ========================*/}
 
-        <button
+        <div
           className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-100 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
         >
           <Image src={googleImage} alt="Google" width={20} height={20} />
           Continue with Google
-        </button>
+        </div>
       </motion.form>
 
       <p
