@@ -1,6 +1,9 @@
 import { auth } from "@/auth";
+import AdminDashBoard from "@/components/AdminDashBoard";
+import DeliveryBoydb from "@/components/DeliveryBoydb";
 import EditRoleMobile from "@/components/EditRoleMobile";
 import Navbar from "@/components/Navbar";
+import UserDashBoard from "@/components/UserDashBoard";
 import connectdb from "@/lib/db";
 import User from "@/models/user.model";
 import { redirect } from "next/navigation";
@@ -23,6 +26,13 @@ async function Home() {
   return (
     <>
       <Navbar user={plainUser} />
+      {user.role == "user" ? (
+        <UserDashBoard />
+      ) : user.role == "admin" ? (
+        <AdminDashBoard />
+      ) : (
+        <DeliveryBoydb />
+      )}
     </>
   );
 }
