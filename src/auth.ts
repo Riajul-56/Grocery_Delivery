@@ -48,15 +48,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
-      if(account?.provider === "google") {
+      if (account?.provider === "google") {
         await connectdb();
         let dbUser = await User.findOne({ email: user.email });
         if (!dbUser) {
-           dbUser = await User.create({
+          dbUser = await User.create({
             name: user.name,
             email: user.email,
             image: user.image,
-            
           });
         }
         user.id = dbUser._id.toString();
@@ -66,13 +65,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     //?token er modhe user er information rakha hoy
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
       }
+      if (trigger == "update") {
+        token.role = session.role;
+      }
+
       return token;
     },
 
