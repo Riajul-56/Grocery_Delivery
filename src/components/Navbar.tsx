@@ -3,6 +3,7 @@ import {
   Boxes,
   ClipboardCheckIcon,
   LogOut,
+  Menu,
   Package,
   PlusCircle,
   Search,
@@ -17,6 +18,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { signOut } from "next-auth/react";
+import { createPortal } from "react-dom";
 
 interface IUser {
   _id?: mongoose.Types.ObjectId; //? Optional ID field
@@ -32,6 +34,7 @@ const Navbar = ({ user }: { user: IUser }) => {
   const [open, setOpen] = useState(false);
   const profileDropDown = useRef<HTMLDivElement>(null);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -45,6 +48,43 @@ const Navbar = ({ user }: { user: IUser }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // ======================== Side Bar for admin Start =====================
+  const sideBar = menuOpen
+    ? createPortal(
+        <AnimatePresence>
+          <motion.div
+            className="fixed top-0 h-full w-[75%] sm:w-[60%] z-9999 bg-linear-to-b from-green-800/90 via-green-700/80 to-green-900/90 backdrop-blur-xl border-r border-green-400/20 shadow-[0_0_50px_-10px_rgba(0,255,100,.3)] flex flex-col p-6 text-white"
+            initial={{
+              opacity: 0,
+              x: -100,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 14,
+            }}
+            exit={{ x: -100 }}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="font-extrabold text-2xl tracking-wide text-white/90 ">
+                Admin Panel
+              </h1>
+              <button className="text-white/80 hover:text-red-400 text-2xl font-bold transition" onClick={()=>setMenuOpen(false)}>
+                <X />
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>,
+        document.body,
+      )
+    : null;
+
+  // ======================== Side Bar for admin End =====================
 
   return (
     <div className="w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-green-500 to-green-700 rounded-2xl shadow-lg shadow-black/30 flex justify-between items-center h-20 px-4 md:px-8 z-50">
@@ -123,8 +163,17 @@ const Navbar = ({ user }: { user: IUser }) => {
                 Manage Orders
               </Link>
             </div>
+
+            {/*================== menu bar for admin ================*/}
+            <div
+              className="md:hidden bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md "
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <Menu className="text-green-600 w-6 h-6" />
+            </div>
           </>
         )}
+
         {/* ============== Cart Icon for admin End  ========================== */}
 
         <div className="relative" ref={profileDropDown}>
@@ -184,14 +233,22 @@ const Navbar = ({ user }: { user: IUser }) => {
                   </div>
                 </div>
 
-                <Link
-                  href={""}
-                  className="flex items-center gap-2 px-3 py-3 hover:bg-gray-50 rounded-lg text-gray-700 font-medium"
-                  onClick={() => setOpen(false)}
-                >
-                  <Package className="w-5 h-5 text-green-600" />
-                  My Order
-                </Link>
+                {/* ================ My Oder for user Start ========================= */}
+
+                {user.role == "user" && (
+                  <Link
+                    href={""}
+                    className="flex items-center gap-2 px-3 py-3 hover:bg-gray-50 rounded-lg text-gray-700 font-medium"
+                    onClick={() => setOpen(false)}
+                  >
+                    <Package className="w-5 h-5 text-green-600" />
+                    My Orders
+                  </Link>
+                )}
+
+                {/* ================ My Oder for user End ========================= */}
+
+                {/* ================ Log in button for Start ========================= */}
 
                 <button
                   className="flex items-center gap-2 w-full text-left px-2 py-3 hover:bg-red-100 rounded-lg text-gray-700 font-medium "
@@ -203,6 +260,8 @@ const Navbar = ({ user }: { user: IUser }) => {
                   <LogOut className="w-5 h-5 text-red-600" />
                   Log Out
                 </button>
+
+                {/* ================ Log in button for End ========================= */}
               </motion.div>
             )}
           </AnimatePresence>
@@ -243,6 +302,7 @@ const Navbar = ({ user }: { user: IUser }) => {
           </AnimatePresence>
         </div>
       </div>
+      {sideBar}
     </div>
   );
 };
