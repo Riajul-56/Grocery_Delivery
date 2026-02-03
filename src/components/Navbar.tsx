@@ -49,7 +49,8 @@ const Navbar = ({ user }: { user: IUser }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ======================== Side Bar for admin Start =====================
+  // ======================== Side Bar for admin Start ===================== //
+  
   const sideBar = menuOpen
     ? createPortal(
         <AnimatePresence>
@@ -154,7 +155,7 @@ const Navbar = ({ user }: { user: IUser }) => {
       )
     : null;
 
-  // ======================== Side Bar for admin End =====================
+  //  ======================== Side Bar for admin End ===================== //
 
   return (
     <div className="w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-green-500 to-green-700 rounded-2xl shadow-lg shadow-black/30 flex justify-between items-center h-20 px-4 md:px-8 z-50">
