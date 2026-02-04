@@ -2,8 +2,9 @@
 import { ArrowLeft, PlusCircle, Upload } from "lucide-react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 const categories = [
   "Fruits & Vegetables",
@@ -22,7 +23,7 @@ const units = ["kg", "g", "liter", "ml", "piece", "pack"];
 
 const AddGrocery = () => {
   const [name, SetName] = useState("");
-  const [categroy, SetCategory] = useState("");
+  const [category, SetCategory] = useState("");
   const [unit, SetUnit] = useState("");
   const [price, SetPrice] = useState("");
   const [frontendImage, SetFrontendImage] = useState<string | null>();
@@ -33,6 +34,25 @@ const AddGrocery = () => {
     const file = files[0];
     SetBackendImage(file);
     SetFrontendImage(URL.createObjectURL(file));
+  };
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("category", category);
+      formData.append("price", price);
+      formData.append("unit", unit);
+      if (backendImage) {
+        formData.append("image", backendImage);
+      }
+
+      const result = await axios.post("/api/admin/add_grocery", formData);
+      console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -73,9 +93,8 @@ const AddGrocery = () => {
           </p>
         </div>
 
-        <form className="flex flex-col gap-6 w-full ">
+        <form className="flex flex-col gap-6 w-full " onSubmit={handleSubmit}>
           {/* ======================Grocery Name start ======================== */}
-
           <div>
             <label
               htmlFor="name"
@@ -92,11 +111,8 @@ const AddGrocery = () => {
               className="border-gray-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all w-full border mt-2"
             />
           </div>
-
           {/* ====================== Grocery Name End  ======================== */}
-
           {/* ====================== Select Category Start  ======================== */}
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ">
             <div>
               <label className="block text-gray-700 font-medium mb-1">
@@ -104,10 +120,10 @@ const AddGrocery = () => {
               </label>
 
               <select
-                name="categroy"
+                name="category"
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all bg-white mt-2"
                 onChange={(e) => SetCategory(e.target.value)}
-                value={categroy}
+                value={category}
               >
                 <option value="">Select Category</option>
                 {categories.map((cat) => (
@@ -138,11 +154,8 @@ const AddGrocery = () => {
               </select>
             </div>
           </div>
-
           {/* ====================== Select Unit End  ======================== */}
-
           {/* ====================== Price start ======================== */}
-
           <div>
             <label
               htmlFor="name"
@@ -159,11 +172,9 @@ const AddGrocery = () => {
               value={price}
             />
           </div>
-
           {/* ====================== Price End  ======================== */}
 
           {/* ====================== Upload image start ======================== */}
-
           <div className="flex flex-col sm:flex-row items-center gap-5">
             <label
               htmlFor="image"
@@ -188,6 +199,18 @@ const AddGrocery = () => {
               />
             )}
           </div>
+
+          <motion.button
+            className="mt-4 w-full bg-linear-to-r from-green-500 to-green-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl disabled::opacity-60 transition-all flex items-center justify-center gap-2 "
+            whileHover={{
+              scale: 1.02,
+            }}
+            whileTap={{
+              scale: 0.9,
+            }}
+          >
+            Add Grocery
+          </motion.button>
 
           {/* ====================== Upload image End  ======================== */}
         </form>

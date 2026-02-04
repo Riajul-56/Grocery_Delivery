@@ -10,11 +10,14 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     if (session?.user?.role !== "admin") {
       return NextResponse.json(
-        { message: "you are not a admin" },
+        { message: "you are not admin" },
         { status: 400 },
       );
     }
+    // Parse form data
     const formData = await req.formData();
+
+    // Extract and validate required fields
     const name = formData.get("name") as string;
     const category = formData.get("category") as string;
     const unit = formData.get("unit") as string;
