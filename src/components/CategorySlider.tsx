@@ -65,7 +65,7 @@ const CategorySlider = () => {
     }, 2000);
     return () => clearInterval(autoScroll);
   }, []);
-  //   ================ Autoscroll button show end =========================//
+  //   ================ Auto scroll button end =========================//
 
   useEffect(() => {
     scrollRef.current?.addEventListener("scroll", checkScroll);
