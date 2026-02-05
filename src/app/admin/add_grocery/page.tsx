@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, PlusCircle, Upload } from "lucide-react";
+import { ArrowLeft, Loader, PlusCircle, Upload } from "lucide-react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -21,11 +21,12 @@ const categories = [
 
 const units = ["kg", "g", "liter", "ml", "piece", "pack"];
 
-const AddGrocery = () => {
+function AddGrocery() {
   const [name, SetName] = useState("");
   const [category, SetCategory] = useState("");
   const [unit, SetUnit] = useState("");
   const [price, SetPrice] = useState("");
+  const [loading, setLoading] = useState(false);
   const [frontendImage, SetFrontendImage] = useState<string | null>();
   const [backendImage, SetBackendImage] = useState<File | null>();
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +38,7 @@ const AddGrocery = () => {
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const formData = new FormData();
@@ -50,8 +52,10 @@ const AddGrocery = () => {
 
       const result = await axios.post("/api/admin/add_grocery", formData);
       console.log(result.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -208,8 +212,13 @@ const AddGrocery = () => {
             whileTap={{
               scale: 0.9,
             }}
+            disabled={loading}
           >
-            Add Grocery
+            {loading ? (
+              <Loader className="w-5 h-5 animate-ping" />
+            ) : (
+              "            Add Grocery"
+            )}
           </motion.button>
 
           {/* ====================== Upload image End  ======================== */}
@@ -217,6 +226,6 @@ const AddGrocery = () => {
       </motion.div>
     </div>
   );
-};
+}
 
 export default AddGrocery;

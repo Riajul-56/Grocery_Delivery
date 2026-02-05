@@ -14,16 +14,12 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    // Parse form data
     const formData = await req.formData();
-
-    // Extract and validate required fields
     const name = formData.get("name") as string;
     const category = formData.get("category") as string;
     const unit = formData.get("unit") as string;
     const price = formData.get("price") as string;
     const file = formData.get("image") as Blob | null;
-
     let imageUrl;
     if (file) {
       imageUrl = await uploadOnCloudinary(file);

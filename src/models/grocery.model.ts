@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-interface IGrocery {
+export interface IGrocery {
   _id?: mongoose.Types.ObjectId;
   name: string;
   category: string;
   price: string;
   unit: string;
   image: string;
-  createAt?: Date;
+  createdAt?: Date;
   updatedAt?: Date;
 }
 
@@ -54,5 +54,4 @@ const grocerySchema = new mongoose.Schema<IGrocery>(
 
 const Grocery =
   mongoose.models.Grocery || mongoose.model("Grocery", grocerySchema);
-
 export default Grocery;
