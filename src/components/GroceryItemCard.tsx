@@ -66,7 +66,7 @@ const GroceryItemCard = ({ item }: { item: IGrocery }) => {
           className="cursor-pointer mt-4 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-full py-2 text-sm font-medium transition-all "
           whileTap={{
             scale: 0.96,
-          }}
+          }} 
         >
           <ShoppingCart />
           Add to Cart
