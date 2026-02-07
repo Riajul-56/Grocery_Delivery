@@ -1,11 +1,18 @@
 "use client";
-import { PlayCircle, PlusCircle, ShoppingCart } from "lucide-react";
+import {
+  addToCart,
+  decreaseQuantity,
+  increaseQuantity,
+} from "@/redux/cartSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 import mongoose from "mongoose";
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
 
 export interface IGrocery {
-  _id?: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
   name: string;
   category: string;
   price: string;
@@ -15,6 +22,10 @@ export interface IGrocery {
   updatedAt?: Date;
 }
 const GroceryItemCard = ({ item }: { item: IGrocery }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { cartData } = useSelector((state: RootState) => state.cart);
+  const cartItem = cartData.find((i) => i._id == item._id);
+
   return (
     <motion.div
       className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
@@ -57,20 +68,61 @@ const GroceryItemCard = ({ item }: { item: IGrocery }) => {
           <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full ">
             {item.unit}
           </span>
+
           <span className="text-green-700 font-bold text-lg">
             ৳{item.price}
           </span>
         </div>
 
-        <motion.button
-          className="cursor-pointer mt-4 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-full py-2 text-sm font-medium transition-all "
-          whileTap={{
-            scale: 0.96,
-          }} 
-        >
-          <ShoppingCart />
-          Add to Cart
-        </motion.button>
+        {/* ============================= add to cart button start ====================- */}
+
+        {!cartItem ? (
+          <motion.button
+            className="cursor-pointer mt-4 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-full py-2 text-sm font-medium transition-all "
+            whileTap={{
+              scale: 0.96,
+            }}
+            onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
+          >
+            <ShoppingCart />
+            Add to Cart
+          </motion.button>
+        ) : (
+          <motion.div
+            className="mt-4 flex items-center justify-center bg-green-50 border border-green-200 rounded-full py-2 px-4 gap-4"
+            initial={{
+              opacity: 0,
+              y: 10,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            <button
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 hover:bg-green-200 transition-all cursor-pointer"
+              onClick={() => dispatch(decreaseQuantity(item._id))}
+            >
+              <Minus size={16} className="text-green-700" />
+            </button>
+
+            <span className="text-sm font-semibold text-green-800">
+              {cartItem.quantity}
+            </span>
+
+            <button
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 hover:bg-green-200 transition-all cursor-pointer"
+              onClick={() => dispatch(increaseQuantity(item._id))}
+            >
+              <Plus size={16} className="text-green-700" />
+            </button>
+          </motion.div>
+        )}
+
+        {/* ============================= add to cart button end ====================- */}
       </div>
     </motion.div>
   );
