@@ -1,13 +1,19 @@
 "use client";
-import { ArrowLeft, ShoppingBasket } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ShoppingBasket, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import Image from "next/image";
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  removeFromCart,
+} from "@/redux/cartSlice";
 
 const CartPage = () => {
   const { cartData } = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <div className="w-[95%] sm:w-[90%] md:[80%] mx-auto mt-8 mb-24 relative">
@@ -64,7 +70,7 @@ const CartPage = () => {
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div>
+          <div className="lg:col-span-2 space-y-5">
             <AnimatePresence>
               {cartData.map((item, index) => (
                 <motion.div
@@ -114,19 +120,62 @@ const CartPage = () => {
 
                   {/* ========================= cart page quantity start ========================= */}
 
-                  <div className="">
-                    
+                  <div className="flex items-center justify-center sm:justify-center gap-3 mt-3 sm:mt-0 bg-gray-50 px-3 py-2 rounded-full">
+                    <button
+                      className="bg-white p-1.5 rounded-full hover:bg-green-100 border border-gray-200 transition-all  cursor-pointer"
+                      onClick={() => dispatch(decreaseQuantity(item._id))}
+                    >
+                      <Minus className="text-green-700 " size={14} />
+                    </button>
+
+                    <span className="font-semibold text-gray-800 w-6 text-center">
+                      {item.quantity}
+                    </span>
+
+                    <button
+                      className="bg-white p-1.5 rounded-full hover:bg-green-100 border border-gray-200 transition-all cursor-pointer"
+                      onClick={() => dispatch(increaseQuantity(item._id))}
+                    >
+                      <Plus className="text-green-700 " size={14} />
+                    </button>
                   </div>
 
                   {/* ========================= cart page quantity end ========================= */}
+
+                  <button>
+                    <Trash2
+                      size={18}
+                      className="sm:ml-4 mt-3 sm:mt-0 text-red-500 hover:text-red-700 transition-all cursor-pointer"
+                      onClick={() => dispatch(removeFromCart(item._id))}
+                    />
+                  </button>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
+
+          <motion.div
+            className="bg-white rounded-2xl shadow-2xl p-6 h-fit sticky top-24 border border-gray-100 flex flex-col"
+            initial={{
+              opacity: 0,
+              x: 30,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+          >
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
+              Order Summary
+            </h2>
+          </motion.div>
         </div>
       )}
     </div>
-  ); 
+  );
 };
 
 export default CartPage;
