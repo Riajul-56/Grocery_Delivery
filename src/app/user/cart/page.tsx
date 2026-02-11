@@ -178,7 +178,25 @@ const CartPage = () => {
             <div className="space-y-3 text-gray-700 text-sm sm:text-base">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="text-green-700 font-semibold">৳ {subTotal}</span>
+                <span className="text-green-700 font-semibold">
+                  ৳ {subTotal}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Delivery Charge</span>
+                <span className="text-green-700 font-semibold">
+                  ৳ {deliveryCharge}
+                </span>
+              </div>
+
+              <hr className="my-3" />
+
+              <div className="flex justify-between font-bold">
+                <span>Final Total</span>
+                <span className="text-green-700 font-semibold">
+                  ৳ {subTotal + deliveryCharge}
+                </span>
               </div>
             </div>
           </motion.div>
@@ -187,7 +205,7 @@ const CartPage = () => {
         </div>
       )}
     </div>
-  );
+  ); 
 };
 
 export default CartPage;
