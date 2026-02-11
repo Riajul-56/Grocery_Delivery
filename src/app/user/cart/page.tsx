@@ -12,7 +12,9 @@ import {
 } from "@/redux/cartSlice";
 
 const CartPage = () => {
-  const { cartData } = useSelector((state: RootState) => state.cart);
+  const { cartData, subTotal, finalTotal, deliveryCharge } = useSelector(
+    (state: RootState) => state.cart,
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   return (
@@ -154,6 +156,7 @@ const CartPage = () => {
             </AnimatePresence>
           </div>
 
+          {/* ============================ oder summary start ====================== */}
           <motion.div
             className="bg-white rounded-2xl shadow-2xl p-6 h-fit sticky top-24 border border-gray-100 flex flex-col"
             initial={{
@@ -171,7 +174,16 @@ const CartPage = () => {
             <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
               Order Summary
             </h2>
+
+            <div className="space-y-3 text-gray-700 text-sm sm:text-base">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="text-green-700 font-semibold">৳ {subTotal}</span>
+              </div>
+            </div>
           </motion.div>
+
+          {/* ============================ oder summary end ====================== */}
         </div>
       )}
     </div>
