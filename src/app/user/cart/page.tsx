@@ -173,6 +173,8 @@ const CartPage = () => {
           >
             <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
               Order Summary
+              Order Summary
+              Order Summary
             </h2>
 
             <div className="space-y-3 text-gray-700 text-sm sm:text-base">
@@ -185,7 +187,7 @@ const CartPage = () => {
 
               <div className="flex justify-between">
                 <span>Delivery Charge</span>
-                <span className="text-green-700 font-semibold">
+                <span className="text-green-700 font-semibold">]]
                   ৳ {deliveryCharge}
                 </span>
               </div>
