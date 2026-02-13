@@ -10,12 +10,14 @@ import {
   increaseQuantity,
   removeFromCart,
 } from "@/redux/cartSlice";
+import { useRouter } from "next/navigation";
 
 const CartPage = () => {
   const { cartData, subTotal, finalTotal, deliveryCharge } = useSelector(
     (state: RootState) => state.cart,
   );
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   return (
     <div className="w-[95%] sm:w-[90%] md:[80%] mx-auto mt-8 mb-24 relative">
@@ -202,6 +204,7 @@ const CartPage = () => {
 
             <motion.button
               className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold text-sm sm:text-base"
+              onClick={() => router.push("/user/checkout")}
               whileTap={{
                 scale: 0.95,
               }}
