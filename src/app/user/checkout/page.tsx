@@ -1,6 +1,15 @@
 "use client";
 import { RootState } from "@/redux/store";
-import { ArrowLeft, Building, Home, MapPin, Phone, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Building,
+  Home,
+  MapPin,
+  Navigation,
+  Phone,
+  Search,
+  User,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,12 +17,12 @@ import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const router = useRouter();
-  const { userData } = useSelector((state: RootState) => state.user);
+  const { userData } = useSelector((upazila: RootState) => upazila.user);
   const [address, setAddress] = useState({
     fullName: userData?.name,
     mobile: userData?.mobile,
     city: "",
-    state: "",
+    upazila: "",
     postalCode: "",
     fullAddress: "",
   });
@@ -67,8 +76,7 @@ const Checkout = () => {
           </h2>
 
           <div className="space-y-4">
-            {/* ================================ name input
-            ====================== */}
+            {/* ================================ name input ====================== */}
             <div className="relative">
               <User
                 className="absolute left-3 top-3 text-green-600 "
@@ -120,40 +128,68 @@ const Checkout = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-3">
+              {/* ================================ city  ====================== */}
+              <div className="relative">
+                <Building
+                  className="absolute left-3 top-3 text-green-600 "
+                  size={18}
+                />
+                <input
+                  type="text"
+                  value={address.city}
+                  placeholder="City"
+                  onChange={(e) =>
+                    setAddress({ ...address, city: e.target.value })
+                  }
+                  className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
+                />
+              </div>
 
-              {/* ================================ city  ====================== */}
+              {/* ================================ upazila  ====================== */}
               <div className="relative">
-                <Building
+                <Navigation
                   className="absolute left-3 top-3 text-green-600 "
                   size={18}
                 />
                 <input
                   type="text"
-                  value={address.city}
-                  placeholder="City"
+                  value={address.upazila}
+                  placeholder="Upazila"
                   onChange={(e) =>
-                    setAddress({ ...address, city: e.target.value })
+                    setAddress({ ...address, upazila: e.target.value })
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
                 />
               </div>
-              
-              {/* ================================ city  ====================== */}
+
+              {/* ================================ postalcode  ====================== */}
               <div className="relative">
-                <Building
+                <Search
                   className="absolute left-3 top-3 text-green-600 "
                   size={18}
                 />
                 <input
                   type="text"
-                  value={address.city}
-                  placeholder="City"
+                  value={address.postalCode}
+                  placeholder="Postal Code"
                   onChange={(e) =>
-                    setAddress({ ...address, city: e.target.value })
+                    setAddress({ ...address, postalCode: e.target.value })
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
                 />
               </div>
+            </div>
+
+            {/* ================================ Search Bar  ====================== */}
+            <div className="flex gap-2 mt-3">
+              <input
+                type="text"
+                placeholder="Search city or area..."
+                className="flex-1 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none"
+              />
+              <button className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium">
+                Search
+              </button>
             </div>
           </div>
         </motion.div>
