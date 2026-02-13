@@ -173,8 +173,6 @@ const CartPage = () => {
           >
             <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
               Order Summary
-              Order Summary
-              Order Summary
             </h2>
 
             <div className="space-y-3 text-gray-700 text-sm sm:text-base">
@@ -187,27 +185,36 @@ const CartPage = () => {
 
               <div className="flex justify-between">
                 <span>Delivery Charge</span>
-                <span className="text-green-700 font-semibold">]]
+                <span className="text-green-700 font-semibold">
                   ৳ {deliveryCharge}
                 </span>
               </div>
 
               <hr className="my-3" />
 
-              <div className="flex justify-between font-bold">
+              <div className="flex justify-between font-bold text-lg sm:text-xl">
                 <span>Final Total</span>
                 <span className="text-green-700 font-semibold">
                   ৳ {subTotal + deliveryCharge}
                 </span>
               </div>
             </div>
+
+            <motion.button
+              className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold text-sm sm:text-base"
+              whileTap={{
+                scale: 0.95,
+              }}
+            >
+              Proceed to Checkout
+            </motion.button>
           </motion.div>
 
           {/* ============================ oder summary end ====================== */}
         </div>
       )}
     </div>
-  ); 
+  );
 };
 
 export default CartPage;
