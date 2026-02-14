@@ -18,13 +18,17 @@ import L, { LatLngExpression } from "leaflet";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
 
+// =========================== Marker Icon funcitionality start ======================= //
 const markerIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
   iconSize: [30, 30],
   iconAnchor: [15, 30],
 });
+// =========================== Marker Icon funcitionality end ======================= //
 
+// =========================== find user data start ======================= //
 const Checkout = () => {
   const router = useRouter();
   const { userData } = useSelector((state: RootState) => state.user);
@@ -36,8 +40,22 @@ const Checkout = () => {
     postCode: "",
     fullAddress: "",
   });
+  // =========================== find user data end ======================= //
+
+  // =========================== map seach functionality start ======================= //
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSeachQuery = async () => {
+    const provider = new OpenStreetMapProvider();
+    const results = await provider.search({ query: searchQuery });
+    if (results) {
+      setPosition([results[0].y, results[0].x]);
+    }
+  };
+  // =========================== map seach functionality end ======================= //
 
   const [position, setPosition] = useState<[number, number] | null>();
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -81,6 +99,7 @@ const Checkout = () => {
     );
   };
 
+  // =========================== auto address add functionality start ======================= //
   useEffect(() => {
     const fetchAddress = async () => {
       if (!position) return;
@@ -102,6 +121,7 @@ const Checkout = () => {
     };
     fetchAddress();
   }, [position]);
+  // =========================== auto address add functionality end ======================= //
 
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
@@ -272,8 +292,13 @@ const Checkout = () => {
                 type="text"
                 placeholder="Search city or area..."
                 className="flex-1 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium">
+              <button
+                className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium"
+                onClick={handleSeachQuery}
+              >
                 Search
               </button>
             </div>
