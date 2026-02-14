@@ -12,11 +12,17 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { LatLngExpression } from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import L, { LatLngExpression } from "leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+
+const markerIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
 
 const Checkout = () => {
   const router = useRouter();
@@ -33,10 +39,16 @@ const Checkout = () => {
   const [position, setPosition] = useState<[number, number] | null>();
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const { latitude, longitude } = pos.coords;
-        setPosition([latitude, longitude]);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setPosition([latitude, longitude]);
+        },
+        (err) => {
+          console.log("location error", err);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+      );
     }
   }, []);
 
@@ -46,6 +58,27 @@ const Checkout = () => {
       setAddress((prev) => ({ ...prev, mobile: userData?.mobile || "" }));
     }
   }, [userData]);
+
+  const DraggableMarker: React.FC = () => {
+    const map = useMap();
+    useEffect(() => {
+      map.setView(position as LatLngExpression, 15, { animate: true });
+    });
+    return (
+      <Marker
+        icon={markerIcon}
+        position={position as LatLngExpression}
+        draggable={true}
+        eventHandlers={{
+          dragend: (e: L.LeafletEvent) => {
+            const marker = e.target as L.Marker;
+            const { lat, lng } = marker.getLatLng();
+            setPosition([lat, lng]);
+          },
+        }}
+      />
+    );
+  };
 
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
@@ -228,12 +261,13 @@ const Checkout = () => {
                   className="w-full h-full"
                   center={position as LatLngExpression}
                   zoom={13}
-                  scrollWheelZoom={false}
+                  scrollWheelZoom={true}
                 >
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
+                  <DraggableMarker />
                 </MapContainer>
               )}
             </div>
