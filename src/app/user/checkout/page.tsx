@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import L, { LatLngExpression } from "leaflet";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
@@ -26,13 +27,13 @@ const markerIcon = new L.Icon({
 
 const Checkout = () => {
   const router = useRouter();
-  const { userData } = useSelector((upazila: RootState) => upazila.user);
+  const { userData } = useSelector((state: RootState) => state.user);
   const [address, setAddress] = useState({
     fullName: userData?.name || "",
     mobile: userData?.mobile || "",
     city: "",
-    upazila: "",
-    postalCode: "",
+    state: "",
+    postCode: "",
     fullAddress: "",
   });
 
@@ -79,6 +80,28 @@ const Checkout = () => {
       />
     );
   };
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (!position) return;
+      try {
+        const result = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?lat=${position[0]}&lon=${position[1]}&format=json`,
+        );
+        console.log(result.data);
+        setAddress((prev) => ({
+          ...prev,
+          city: result.data.address.state_district,
+          state: result.data.address.state,
+          postCode: result.data.address.postcode,
+          fullAddress: result.data.display_name,
+        }));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAddress();
+  }, [position]);
 
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
@@ -130,6 +153,7 @@ const Checkout = () => {
 
           <div className="space-y-4">
             {/* ================================ name input ====================== */}
+
             <div className="relative">
               <User
                 className="absolute left-3 top-3 text-green-600 "
@@ -137,7 +161,7 @@ const Checkout = () => {
               />
               <input
                 type="text"
-                value={address.fullName}
+                value={address.fullName || ""}
                 placeholder="Full Name"
                 onChange={(e) =>
                   setAddress((prev) => ({
@@ -157,7 +181,7 @@ const Checkout = () => {
               />
               <input
                 type="text"
-                value={address.mobile}
+                value={address.mobile || ""}
                 placeholder="Mobile Number"
                 onChange={(e) =>
                   setAddress((prev) => ({ ...prev, mobile: address.mobile }))
@@ -174,7 +198,7 @@ const Checkout = () => {
               />
               <input
                 type="text"
-                value={address.fullAddress}
+                value={address.fullAddress || ""}
                 placeholder="Full Address"
                 onChange={(e) =>
                   setAddress((prev) => ({
@@ -195,7 +219,7 @@ const Checkout = () => {
                 />
                 <input
                   type="text"
-                  value={address.city}
+                  value={address.city || ""}
                   placeholder="City"
                   onChange={(e) =>
                     setAddress((prev) => ({ ...prev, city: address.city }))
@@ -204,7 +228,7 @@ const Checkout = () => {
                 />
               </div>
 
-              {/* ================================ upazila  ====================== */}
+              {/* ================================ state  ====================== */}
               <div className="relative">
                 <Navigation
                   className="absolute left-3 top-3 text-green-600 "
@@ -212,19 +236,19 @@ const Checkout = () => {
                 />
                 <input
                   type="text"
-                  value={address.upazila}
-                  placeholder="Upazila"
+                  value={address.state || ""}
+                  placeholder="state"
                   onChange={(e) =>
                     setAddress((prev) => ({
                       ...prev,
-                      upazila: address.upazila,
+                      state: address.state,
                     }))
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
                 />
               </div>
 
-              {/* ================================ postalcode  ====================== */}
+              {/* ================================ postCode  ====================== */}
               <div className="relative">
                 <Search
                   className="absolute left-3 top-3 text-green-600 "
@@ -232,10 +256,10 @@ const Checkout = () => {
                 />
                 <input
                   type="text"
-                  value={address.postalCode}
-                  placeholder="Postal Code"
+                  value={address.postCode || ""}
+                  placeholder="Post Code"
                   onChange={(e) =>
-                    setAddress({ ...address, postalCode: e.target.value })
+                    setAddress({ ...address, postCode: e.target.value })
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
                 />
