@@ -3,6 +3,8 @@ import { RootState } from "@/redux/store";
 import {
   ArrowLeft,
   Building,
+  CreditCard,
+  CreditCardIcon,
   Home,
   Loader2,
   LocateFixed,
@@ -10,6 +12,7 @@ import {
   Navigation,
   Phone,
   Search,
+  Truck,
   User,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -34,6 +37,9 @@ const markerIcon = new L.Icon({
 const Checkout = () => {
   const router = useRouter();
   const { userData } = useSelector((state: RootState) => state.user);
+  const { subTotal, deliveryCharge, finalTotal } = useSelector(
+    (state: RootState) => state.cart,
+  );
   const [address, setAddress] = useState({
     fullName: userData?.name || "",
     mobile: userData?.mobile || "",
@@ -146,6 +152,10 @@ const Checkout = () => {
   };
   // =========================== auto address add functionality end ======================= //
 
+  // =========================== Payment method functionality start ======================= //
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
+  // =========================== Payment method functionality end ======================= //
+
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
       <motion.button
@@ -176,6 +186,7 @@ const Checkout = () => {
       </motion.h1>
 
       <div className="grid md:grid-cols-2 gap-8">
+        {/* =================== left side content start ================ */}
         <motion.div
           className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100"
           initial={{
@@ -357,6 +368,92 @@ const Checkout = () => {
             </div>
           </div>
         </motion.div>
+        {/* =================== left side content end ================ */}
+
+        {/* =================== right side content start ================ */}
+        <motion.div
+          className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border-gray-100 h-fit"
+          initial={{
+            opacity: 0,
+            x: 20,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+          }}
+          transition={{
+            duration: 0.3,
+          }}
+        >
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <CreditCard className="text-green-600" /> Payment Method{" "}
+          </h2>
+
+          <div className="space-y-4 mb-6">
+            {/* ==================== online paymnent button start ================= */}
+            <button
+              onClick={() => setPaymentMethod("online")}
+              className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all ${
+                paymentMethod === "online"
+                  ? "border-green-600 bg-green-50 shadow-xm"
+                  : "hover:bg-gray-50"
+              }`}
+            >
+              <CreditCardIcon className="text-green-600" />{" "}
+              <span className="font-medium text-gray-700">
+                {" "}
+                Pay Online(stripe)
+              </span>
+            </button>
+            {/* ==================== online paymnent button end ================= */}
+
+            {/* ==================== offline paymnent button start ================= */}
+            <button
+              onClick={() => setPaymentMethod("cod")}
+              className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all ${
+                paymentMethod === "cod"
+                  ? "border-green-600 bg-green-50 shadow-xm"
+                  : "hover:bg-gray-50"
+              }`}
+            >
+              <Truck className="text-green-600" />{" "}
+              <span className="font-medium text-gray-700">
+                {" "}
+                Cash On Delivery
+              </span>
+            </button>
+            {/* ==================== offline paymnent button end ================= */}
+          </div>
+
+          <div className="border-t pt-4 text-gray-700 space-y-2 text-sm sm:text-base ">
+            <div className="flex justify-between">
+              <span className="font-semibold">Subtotal</span>
+              <span className="font-semibold text-green-600">৳ {subTotal}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="font-semibold">Delivery Charge</span>
+              <span className="font-semibold text-green-600">
+                ৳ {deliveryCharge}
+              </span>
+            </div>
+
+            <div className="flex justify-between font-bold text-lg border-t pt-3">
+              <span className="font-semibold">Final Total</span>
+              <span className="font-semibold text-green-600">
+                ৳ {finalTotal}
+              </span>
+            </div>
+          </div>
+
+          <motion.button
+            whileTap={{ scale: 0.93 }}
+            className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold"
+          >
+            {paymentMethod == "cod" ? "Place Order" : "Pay & Place order"}
+          </motion.button>
+        </motion.div>
+        {/* =================== right side content end ================ */}
       </div>
     </div>
   );
