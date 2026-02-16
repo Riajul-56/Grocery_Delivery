@@ -4,6 +4,8 @@ import {
   ArrowLeft,
   Building,
   Home,
+  Loader2,
+  LocateFixed,
   MapPin,
   Navigation,
   Phone,
@@ -42,17 +44,21 @@ const Checkout = () => {
   });
   // =========================== find user data end ======================= //
 
-  // =========================== map seach functionality start ======================= //
+  // =========================== map search functionality start ======================= //
+  const [searching, setSearching] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSeachQuery = async () => {
+    setSearching(true);
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: searchQuery });
     if (results) {
+      setSearching(false);
       setPosition([results[0].y, results[0].x]);
     }
   };
-  // =========================== map seach functionality end ======================= //
+  // =========================== map search functionality end ======================= //
 
   const [position, setPosition] = useState<[number, number] | null>();
 
@@ -186,7 +192,7 @@ const Checkout = () => {
                 onChange={(e) =>
                   setAddress((prev) => ({
                     ...prev,
-                    fullName: address.fullName,
+                    fullName: e.target.value,
                   }))
                 }
                 className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
@@ -204,7 +210,7 @@ const Checkout = () => {
                 value={address.mobile || ""}
                 placeholder="Mobile Number"
                 onChange={(e) =>
-                  setAddress((prev) => ({ ...prev, mobile: address.mobile }))
+                  setAddress((prev) => ({ ...prev, mobile: e.target.value }))
                 }
                 className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
               />
@@ -223,7 +229,7 @@ const Checkout = () => {
                 onChange={(e) =>
                   setAddress((prev) => ({
                     ...prev,
-                    fullAddress: address.fullAddress,
+                    fullAddress: e.target.value,
                   }))
                 }
                 className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
@@ -242,7 +248,7 @@ const Checkout = () => {
                   value={address.city || ""}
                   placeholder="City"
                   onChange={(e) =>
-                    setAddress((prev) => ({ ...prev, city: address.city }))
+                    setAddress((prev) => ({ ...prev, city: e.target.value }))
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
                 />
@@ -261,7 +267,7 @@ const Checkout = () => {
                   onChange={(e) =>
                     setAddress((prev) => ({
                       ...prev,
-                      state: address.state,
+                      state: e.target.value,
                     }))
                   }
                   className="pl-10 w-full border rounded-lg p-3 text-sm bg-gray-50"
@@ -299,7 +305,11 @@ const Checkout = () => {
                 className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium"
                 onClick={handleSeachQuery}
               >
-                Search
+                {searching ? (
+                  <Loader2 className="animate-spin" size={16} />
+                ) : (
+                  "Search"
+                )}
               </button>
             </div>
 
@@ -319,6 +329,13 @@ const Checkout = () => {
                   <DraggableMarker />
                 </MapContainer>
               )}
+
+              <motion.button
+                whileTap={{ scale: 0.8 }}
+                className="absolute bottom-4 right-4 bg-green-600 text-whte shadow-lg rounded-full p-3 hover:bg-green-700 transition-all flex items-center justify-center z-999 "
+              >
+                <LocateFixed size={22} />
+              </motion.button>
             </div>
           </div>
         </motion.div>
