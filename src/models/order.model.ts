@@ -13,7 +13,7 @@ interface IOrder {
       quantity: number;
     },
   ];
-  totalAmmount: string;
+  totalAmmount: number;
   paymentMethod: "cod" | "online";
   address: {
     fullName: string;
@@ -71,6 +71,7 @@ const orderSchema = new mongoose.Schema<IOrder>(
       latitude: Number,
       longitude: Number,
     },
+    totalAmmount: Number,
     status: {
       type: String,
       enum: ["pending", "out for delivery", "delivered"],
@@ -80,6 +81,7 @@ const orderSchema = new mongoose.Schema<IOrder>(
   { timestamps: true },
 );
 
-const Order = mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);
+const Order =
+  mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);
 
 export default Order;
