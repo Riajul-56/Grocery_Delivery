@@ -13,14 +13,14 @@ interface IOrder {
       quantity: number;
     },
   ];
-  totalAmmount: number;
+  totalAmount: number;
   paymentMethod: "cod" | "online";
   address: {
     fullName: string;
     city: string;
     state: string;
     country: string;
-    postalCode: string;
+    postCode: string;
     fullAddress: string;
     mobile: string;
     latitude: number;
@@ -65,13 +65,13 @@ const orderSchema = new mongoose.Schema<IOrder>(
       city: String,
       state: String,
       country: String,
-      postalCode: String,
+      postCode: String,
       fullAddress: String,
       mobile: String,
       latitude: Number,
       longitude: Number,
     },
-    totalAmmount: Number,
+    totalAmount: Number,
     status: {
       type: String,
       enum: ["pending", "out for delivery", "delivered"],

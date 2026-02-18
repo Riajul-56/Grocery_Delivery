@@ -37,7 +37,7 @@ const markerIcon = new L.Icon({
 const Checkout = () => {
   const router = useRouter();
   const { userData } = useSelector((state: RootState) => state.user);
-  const { subTotal, deliveryCharge, finalTotal } = useSelector(
+  const { subTotal, deliveryCharge, finalTotal, cartData } = useSelector(
     (state: RootState) => state.cart,
   );
   const [address, setAddress] = useState({
@@ -155,6 +155,42 @@ const Checkout = () => {
   // =========================== Payment method functionality start ======================= //
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
   // =========================== Payment method functionality end ======================= //
+
+  // =========================== Place order functionality start ======================= //
+  const handleCod = async () => {
+    if (!position) {
+      return null;
+    }
+    try {
+      const result = await axios.post("/api/user/order", {
+        userId: userData?._id,
+        items: cartData.map((item) => ({
+          grocery: item._id,
+          name: item.name,
+          price: item.price,
+          unit: item.unit,
+          image: item.image,
+          quantity: item.quantity,
+        })),
+        totalAmount: finalTotal,
+        address: {
+          fullName: address.fullName,
+          city: address.city,
+          state: address.state,
+          postCode: address.postCode,
+          fullAddress: address.fullAddress,
+          mobile: address.mobile,
+          latitude: position[0],
+          longitude: position[1],
+        },
+        paymentMethod,
+      });
+      console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // =========================== Place order  functionality end ======================= //
 
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
@@ -449,6 +485,11 @@ const Checkout = () => {
           <motion.button
             whileTap={{ scale: 0.93 }}
             className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold"
+            onClick={() => {
+              if (paymentMethod == "cod") {
+                handleCod();
+              } else null;
+            }}
           >
             {paymentMethod == "cod" ? "Place Order" : "Pay & Place order"}
           </motion.button>

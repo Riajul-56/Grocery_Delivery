@@ -7,9 +7,9 @@ export async function POST(req: NextRequest) {
   try {
     await connectDb();
 
-    const { userId, items, paymentMethod, address, totalAmmount } =
+    const { userId, items, paymentMethod, address, totalAmount } =
       await req.json();
-    if (!userId || !items || !paymentMethod || !address || !totalAmmount) {
+    if (!userId || !items || !paymentMethod || !address || !totalAmount) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 },
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       items,
       paymentMethod,
       address,
-      totalAmmount,
+      totalAmount,
     });
     return NextResponse.json(newOrder, { status: 201 });
   } catch (error) {
