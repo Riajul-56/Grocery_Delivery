@@ -366,7 +366,7 @@ const Checkout = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
-                className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium"
+                className="bg-green-600 text-white px-5 rounded-lg hover:bg-green-700 transition-all font-medium cursor-pointer"
                 onClick={handleSeachQuery}
               >
                 {searching ? (
@@ -484,7 +484,7 @@ const Checkout = () => {
 
           <motion.button
             whileTap={{ scale: 0.93 }}
-            className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold"
+            className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold cursor-pointer"
             onClick={() => {
               if (paymentMethod == "cod") {
                 handleCod();

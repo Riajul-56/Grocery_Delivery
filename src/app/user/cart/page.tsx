@@ -203,7 +203,7 @@ const CartPage = () => {
             </div>
 
             <motion.button
-              className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold text-sm sm:text-base"
+              className="w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold text-sm cursor-pointer sm:text-base"
               onClick={() => router.push("/user/checkout")}
               whileTap={{
                 scale: 0.95,
