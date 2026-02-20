@@ -1,6 +1,7 @@
 "use client";
-import { Check, CheckCircle } from "lucide-react";
+import { ArrowRight, Check, CheckCircle, Package } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const OrderSuccess = () => {
   return (
@@ -39,9 +40,8 @@ const OrderSuccess = () => {
             ease: "easeInOut",
           }}
         >
-          <div className="w-full h-full rounded-full bg-green-700 blur-4xl"/>
+          <div className="w-full h-full rounded-full bg-green-700 blur-4xl" />
         </motion.div>
-
       </motion.div>
 
       <motion.h1
@@ -66,11 +66,11 @@ const OrderSuccess = () => {
         className="text-gray-600 mt-3 text-sm md:text-base max-w-md"
         initial={{
           opacity: 0,
-          x: 30,
+          y: 30,
         }}
         animate={{
           opacity: 1,
-          x: 0,
+          y: 0,
         }}
         transition={{
           duration: 0.4,
@@ -82,7 +82,71 @@ const OrderSuccess = () => {
         <span className="font-semibold text-green-700">My Orders</span> section
       </motion.p>
 
-      
+      <motion.div
+        className="mt-10"
+        initial={{
+          opacity: 0,
+          y: 40,
+        }}
+        animate={{
+          opacity: 1,
+          y: [0, -10, 0],
+        }}
+        transition={{
+          duration: 2,
+          delay: 1,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <Package className="w-16 h-16 md:w-20 md:h-20 text-green-500" />
+      </motion.div>
+
+      <motion.div
+        className="mt-12"
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        transition={{
+          duration: 0.4,
+          delay: 1.2,
+        }}
+      >
+        <Link href={"/user/my_orders"}>
+          <motion.div
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white taxt-base font-semibold px-8 py-3 rounded-full shadow-lg transition-all"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.93 }}
+          >
+            Go to My Oders Page <ArrowRight />
+          </motion.div>
+        </Link>
+      </motion.div>
+
+      <motion.div
+        className="absolute top-0 left-0 w-full h-full pointer-events-none"
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: [0.2, 0.6, 0.2],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <div className="absolute top-20 left-[10%] w-2 h-2 bg-green-400 rounded-full animate-bounce " />
+        <div className="absolute top-32 left-[30%] w-2 h-2 bg-green-400 rounded-full animate-pulse " />
+        <div className="absolute top-24 left-[50%] w-2 h-2 bg-green-400 rounded-full animate-bounce " />
+        <div className="absolute top-16 left-[70%] w-2 h-2 bg-green-400 rounded-full animate-pulse " />
+      </motion.div>
     </div>
   );
 };
