@@ -185,7 +185,7 @@ const Checkout = () => {
         },
         paymentMethod,
       });
-      console.log(result.data);
+      router.push("/user/order_success");
     } catch (error) {
       console.log(error);
     }
