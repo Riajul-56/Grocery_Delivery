@@ -378,6 +378,8 @@ const Checkout = () => {
             </div>
 
             {/* ================================ Map ====================== */}
+
+            
             <div className="relative mt-6 h-82.5 rounded-xl overflow-hidden border border-gray-200 shadow-inner ">
               {position && (
                 <MapContainer
