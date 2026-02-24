@@ -1,6 +1,7 @@
 import connectDb from "@/lib/db";
 import Order from "@/models/order.model";
 import User from "@/models/user.model";
+import { metadata } from "motion/react-client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -49,6 +50,15 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
+      metadata: {
+        orderId: newOrder._id.toString(),
+      },
     });
-  } catch (error) {}
+    return NextResponse.json({ url: session.url }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: `Order Payment failed: ${error}` },
+      { status: 500 },
+    );
+  }
 }
