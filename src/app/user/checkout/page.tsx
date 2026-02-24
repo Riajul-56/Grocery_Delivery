@@ -192,6 +192,44 @@ const Checkout = () => {
   };
   // =========================== Place order  functionality end ======================= //
 
+  // =========================== Online Payment order  functionality start ======================= //
+  const handleOnlinePayment = async () => {
+    if (!position) {
+      return null;
+    }
+    try {
+      const result = await axios.post("/api/user/payment", {
+        userId: userData?._id,
+        items: cartData.map((item) => ({
+          grocery: item._id,
+          name: item.name,
+          price: item.price,
+          unit: item.unit,
+          image: item.image,
+          quantity: item.quantity,
+        })),
+        totalAmount: finalTotal,
+        address: {
+          fullName: address.fullName,
+          city: address.city,
+          state: address.state,
+          postCode: address.postCode,
+          fullAddress: address.fullAddress,
+          mobile: address.mobile,
+          latitude: position[0],
+          longitude: position[1],
+        },
+        paymentMethod,
+      });
+      if (result.data.url) {
+        window.location.href = result.data.url;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // =========================== Online Payment order  functionality end ======================= //
+
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
       <motion.button
@@ -379,7 +417,6 @@ const Checkout = () => {
 
             {/* ================================ Map ====================== */}
 
-            
             <div className="relative mt-6 h-82.5 rounded-xl overflow-hidden border border-gray-200 shadow-inner ">
               {position && (
                 <MapContainer
@@ -490,7 +527,9 @@ const Checkout = () => {
             onClick={() => {
               if (paymentMethod == "cod") {
                 handleCod();
-              } else null;
+              } else {
+                handleOnlinePayment();
+              }
             }}
           >
             {paymentMethod == "cod" ? "Place Order" : "Pay & Place order"}
