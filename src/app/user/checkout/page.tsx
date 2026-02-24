@@ -222,7 +222,8 @@ const Checkout = () => {
         paymentMethod,
       });
       if (result.data.url) {
-        window.location.href = result.data.url;
+        // window.location.href = result.data.url;
+          router.push(result.data.url);
       }
     } catch (error) {
       console.log(error);
