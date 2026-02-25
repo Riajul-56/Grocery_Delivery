@@ -1,9 +1,14 @@
 "use client";
 import { IOrder } from "@/models/order.model";
-import { CreditCard, MapPin, Scooter } from "lucide-react";
+import { CreditCard, MapPin, Package, Scooter } from "lucide-react";
 import { motion } from "motion/react";
+import { useState } from "react";
 
 function UserOrderCard({ order }: { order: IOrder }) {
+  // ================== item toggle functionality start ========================//
+  const [expended, setExpended] = useState(false);
+  // ================== item toggle functionality end ========================//
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
@@ -94,6 +99,18 @@ function UserOrderCard({ order }: { order: IOrder }) {
           <span className="truncate">{order.address.fullAddress}</span>
         </div>
         {/* ======================== Address End ============================ */}
+
+        <div className="border-t border-gray-200 pt-3">
+          <button
+            onClick={() => setExpended((prev) => !prev)}
+            className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
+          >
+            <span className="flex items-center gap-2">
+              <Package size={16} className="text-green-600" />
+              {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
+            </span>
+          </button>
+        </div>
       </div>
     </motion.div>
   );
