@@ -1,9 +1,11 @@
 "use client";
 import { IOrder } from "@/models/order.model";
 import axios from "axios";
-import { ArrowLeft, Package, PackageSearch } from "lucide-react";
+import { ArrowLeft, Package, PackageSearch, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import UserOrderCard from "@/components/UserOrderCard";
 
 const MyOrder = () => {
   const router = useRouter();
@@ -61,7 +63,26 @@ const MyOrder = () => {
             </p>
           </div>
         ) : (
-          <div></div>
+          <div className="mt-4 space-y-6">
+            {orders.map((order, index) => (
+              <motion.div
+                key={index}
+                initial={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              >
+                <UserOrderCard order={order} />
+              </motion.div>
+            ))}
+          </div>
         )}
         {/* ====================  Order Items End ==================== */}
       </div>
