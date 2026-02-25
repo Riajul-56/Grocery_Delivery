@@ -1,5 +1,6 @@
 "use client";
 import { IOrder } from "@/models/order.model";
+import { CreditCard, MapPin, Scooter } from "lucide-react";
 import { motion } from "motion/react";
 
 function UserOrderCard({ order }: { order: IOrder }) {
@@ -33,6 +34,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:item-center gap-3 border-b border-gray-100 px-5 py-4 bg-linear-to-r from-green-50 to-white">
         {/* ===================== Order Id & Date start ========================*/}
+
         <div>
           <h3 className="text-lg font-semibold text-gray-800">
             Order{" "}
@@ -46,6 +48,8 @@ function UserOrderCard({ order }: { order: IOrder }) {
           </p>
         </div>
         {/* ===================== Order Id & Date end ========================*/}
+
+        {/* ======================== Paid Or Unpaid Start ============================ */}
 
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -65,8 +69,32 @@ function UserOrderCard({ order }: { order: IOrder }) {
           </span>
         </div>
       </div>
+      {/* ======================== Paid Or Unpaid End ============================ */}
 
-      
+      <div className="p-5 space-y-4">
+        {/* ======================== Payment Method start ============================ */}
+
+        {order.paymentMethod == "cod" ? (
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
+            <Scooter size={16} className="text-green-600" />
+            Cash On Delivery
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
+            <CreditCard size={16} className="text-green-600" />
+            Online Payment
+          </div>
+        )}
+        {/* ======================== Payment Method End ============================ */}
+
+        {/* ======================== Address Start ============================ */}
+
+        <div className="flex items-center gap-2 text-gray-700 text-sm">
+          <MapPin size={16} className="text-green-600" />
+          <span className="truncate">{order.address.fullAddress}</span>
+        </div>
+        {/* ======================== Address End ============================ */}
+      </div>
     </motion.div>
   );
 }
