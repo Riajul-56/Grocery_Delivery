@@ -23,7 +23,7 @@ const CartPage = () => {
     <div className="w-[95%] sm:w-[90%] md:[80%] mx-auto mt-8 mb-24 relative">
       <Link
         href={"/"}
-        className="absolute -top-2 left-0 flex items-center gap-2 text-green-700 hover:text-green-800 font-medium transition-all"
+        className="absolute left-6 flex items-center gap-2 text-green-700 font-semibold bg-white px-4 py-2 rounded-full shadow-md hover:bg-green-100 hover:shadow-lg transition-all"
       >
         <ArrowLeft size={20} />
         <span className="hidden sm:inline">Back to Home</span>

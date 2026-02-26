@@ -37,7 +37,7 @@ const Navbar = ({ user }: { user: IUser }) => {
   const profileDropDown = useRef<HTMLDivElement>(null);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const {cartData}=useSelector((state:RootState)=>state.cart)
+  const { cartData } = useSelector((state: RootState) => state.cart);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -255,7 +255,7 @@ const Navbar = ({ user }: { user: IUser }) => {
         <div className="relative" ref={profileDropDown}>
           {/* ============== User Profile Image Start ========================== */}
           <div
-            className="bg-white rounded-full w-11 h-11 items-center justify-center overflow-hidden shadow-md hover:scale-105 transition-transform "
+            className="bg-white rounded-full w-11 h-11 items-center justify-center overflow-hidden shadow-md hover:scale-105 transition-transform cursor-pointer"
             onClick={() => setOpen((prev) => !prev)}
           >
             {user.image ? (
@@ -330,7 +330,7 @@ const Navbar = ({ user }: { user: IUser }) => {
                 {/* ================ Log in button for Start ========================= */}
 
                 <button
-                  className="flex items-center gap-2 w-full text-left px-2 py-3 hover:bg-red-100 rounded-lg text-gray-700 font-medium "
+                  className="flex items-center gap-2 w-full text-left px-2 py-3 hover:bg-red-100 rounded-lg text-gray-700 font-medium cursor-pointer"
                   onClick={() => {
                     setOpen(false);
                     signOut({ callbackUrl: "/login" });

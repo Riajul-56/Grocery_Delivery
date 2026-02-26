@@ -223,7 +223,7 @@ const Checkout = () => {
       });
       if (result.data.url) {
         // window.location.href = result.data.url;
-          router.push(result.data.url);
+        router.push(result.data.url);
       }
     } catch (error) {
       console.log(error);
@@ -234,9 +234,7 @@ const Checkout = () => {
   return (
     <div className="w-[92%] md:w-[80%] mx-auto py-10 relative ">
       <motion.button
-        className="absolute left-0 top-2 flex items-center gap-2 text-green-700 hover:text-green-800 font-semibold cursor-pointer "
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.97 }}
+        className="absolute flex items-center gap-2 text-green-700 font-semibold bg-white px-4 py-2 rounded-full shadow-md hover:bg-green-100 hover:shadow-lg transition-all cursor-pointer"
         onClick={() => router.push("/user/cart")}
       >
         <ArrowLeft size={16} />

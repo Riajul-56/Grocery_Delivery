@@ -142,7 +142,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
               {order.items.map((item, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition"
+                  className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
                 >
                   {/* ========================= Left side item details start =========================== */}
                   <div className="flex items-center gap-3">
