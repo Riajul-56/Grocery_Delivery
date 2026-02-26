@@ -1,7 +1,15 @@
 "use client";
 import { IOrder } from "@/models/order.model";
-import { CreditCard, MapPin, Package, Scooter } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  CreditCard,
+  MapPin,
+  Package,
+  Scooter,
+} from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 
 function UserOrderCard({ order }: { order: IOrder }) {
@@ -109,8 +117,86 @@ function UserOrderCard({ order }: { order: IOrder }) {
               <Package size={16} className="text-green-600" />
               {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
             </span>
+            {expended ? (
+              <ChevronUp size={16} className="text-green-600" />
+            ) : (
+              <ChevronDown size={16} className="text-green-600" />
+            )}
           </button>
+
+          <motion.div
+            className="overflow-hidden"
+            initial={{
+              opacity: 0,
+              height: 0,
+            }}
+            animate={{
+              opacity: expended ? 1 : 0,
+              height: expended ? "auto" : 0,
+            }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            <div className="nt-3 space-y-3">
+              {order.items.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition"
+                >
+                  {/* ========================= Left side item details start =========================== */}
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={48}
+                      height={48}
+                      className=" rounded-lg object-cover border border-gray-200"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">
+                        {item.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {item.quantity} x {item.unit}
+                      </p>
+                    </div>
+                  </div>
+                  {/* ========================= Left side item details end =========================== */}
+
+                  {/* ========================= Right side item details start =========================== */}
+                  <p className="text-sm font-semibold text-gray-800">
+                    ৳ {Number(item.price) * item.quantity}
+                  </p>
+                  {/* ========================= Right side item details end =========================== */}
+                </div>
+              ))}
+
+              <div></div>
+            </div>
+          </motion.div>
         </div>
+
+        {/* ================ total amount start ======================== */}
+        <div className="border-t pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
+            <Scooter className="text-green-600" size={16} />
+            <span>
+              Delivery :{" "}
+              <span className="text-green-700 font-semibold">
+                ${order.status}
+              </span>{" "}
+            </span>
+          </div>
+
+          <div>
+            Total:{" "}
+            <span className="text-green-700 font-bold">
+              ৳ {order.totalAmount}
+            </span>
+          </div>
+        </div>
+        {/* ================ total amount end ======================== */}
       </div>
     </motion.div>
   );
