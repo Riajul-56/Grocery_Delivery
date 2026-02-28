@@ -7,8 +7,8 @@ import {
   MapPin,
   Package,
   Phone,
+  Scooter,
   Timer,
-  TimerIcon,
   User,
 } from "lucide-react";
 import { motion } from "motion/react";
@@ -137,7 +137,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
       {/* =========================  Item details start =========================== */}
 
-      <div className="border-t border-gray-200 pt-3">
+      <div className="border-t border-gray-200 mt-3 pt-3">
         <button
           onClick={() => setExpended((prev) => !prev)}
           className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
@@ -200,6 +200,27 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
         </motion.div>
       </div>
       {/* ========================= Item details end =========================== */}
+
+      {/* ================ total amount start ======================== */}
+      <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
+        <div className="flex items-center gap-2 text-gray-700 text-sm">
+          <Scooter className="text-green-600" size={16} />
+          <span>
+            Delivery :{" "}
+            <span className="text-green-700 font-semibold">
+              {order.status}
+            </span>{" "}
+          </span>
+        </div>
+
+        <div>
+          Total:{" "}
+          <span className="text-green-700 font-bold">
+            ৳ {order.totalAmount}
+          </span>
+        </div>
+      </div>
+      {/* ================ total amount end ======================== */}
     </motion.div>
   );
 };
