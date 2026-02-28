@@ -116,6 +116,7 @@ function AddGrocery() {
             />
           </div>
           {/* ====================== Grocery Name End  ======================== */}
+
           {/* ====================== Select Category Start  ======================== */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ">
             <div>
@@ -159,6 +160,7 @@ function AddGrocery() {
             </div>
           </div>
           {/* ====================== Select Unit End  ======================== */}
+          
           {/* ====================== Price start ======================== */}
           <div>
             <label

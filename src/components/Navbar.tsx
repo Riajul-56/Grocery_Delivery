@@ -133,7 +133,7 @@ const Navbar = ({ user }: { user: IUser }) => {
               </Link>
 
               <Link
-                href={""}
+                href={"/admin/manage_orders"}
                 className="flex items-center gap-3 p-3 rounded-lg bg-white/10 hover:bg-white/20 hover:pl-4 transition-all"
               >
                 <ClipboardCheckIcon className="w-5 h-5" />
