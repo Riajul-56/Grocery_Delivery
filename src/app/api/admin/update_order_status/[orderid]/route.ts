@@ -17,7 +17,8 @@ export async function POST(
     order.status = status;
     let availableDeliveryBoys: any = [];
     if (status === "Out of delivery" && !order.assignment) {
-        
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
