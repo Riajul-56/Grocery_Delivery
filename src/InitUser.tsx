@@ -1,9 +1,0 @@
-"use client";
-import useGetMe from "./hooks/useGetMe";
-
-function InitUser() {
-  useGetMe();
-  return null;
-}
-
-export default InitUser;
