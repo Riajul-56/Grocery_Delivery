@@ -8,5 +8,3 @@ export const getSocket = () => {
   }
   return socket;
 };
-
-
