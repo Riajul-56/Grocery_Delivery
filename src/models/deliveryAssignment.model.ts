@@ -47,3 +47,5 @@ const DeliveryAssignment =
   mongoose.models.DeliveryAssignment ||
   mongoose.model("DeliveryAssignment", deliveryAssignmentSchema);
 //============================ Model design End ========================//
+
+export default DeliveryAssignment;

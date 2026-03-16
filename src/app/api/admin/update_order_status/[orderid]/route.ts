@@ -1,5 +1,7 @@
 import connectDb from "@/lib/db";
+import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import Order from "@/models/order.model";
+import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -17,7 +19,32 @@ export async function POST(
     order.status = status;
     let availableDeliveryBoys: any = [];
     if (status === "Out of delivery" && !order.assignment) {
-      const { latitude, longitude } = order.adress
+      const { latitude, longitude } = order.adress;
+
+      const nearByDeliveryBoys = await User.find({
+        role: "deliveryBoy",
+        location: {
+          //location gives us some operator
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: [Number(latitude), Number(longitude)],
+            },
+            $maxDistance: 10000, //10 km
+          },
+        },
+      });
+
+      const nearById = nearByDeliveryBoys.map((b) => b._id);
+
+      //when delivery boy busy with other order it find by id
+      const busyId = await DeliveryAssignment.find({
+        assignedTo: { $in: nearById },
+        status: { $nin: ["brodcasted", "completed"] },
+      }).distinct("assignedTo");
+
+      const bysuIdSet = new Set(busyId.map((b) => String(b)));
+      const avilableDeliveryBoys = nearByDeliveryBoys.filter((b) => bysuIdSet);
     }
   } catch (error) {
     console.log(error);
