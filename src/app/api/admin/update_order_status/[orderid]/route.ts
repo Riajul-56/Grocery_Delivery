@@ -44,7 +44,18 @@ export async function POST(
       }).distinct("assignedTo");
 
       const bysuIdSet = new Set(busyId.map((b) => String(b)));
-      const avilableDeliveryBoys = nearByDeliveryBoys.filter((b) => bysuIdSet);
+      const avilableDeliveryBoys = nearByDeliveryBoys.filter(
+        (b) => !bysuIdSet.has(String(b._id)),
+      );
+
+      const candidates = avilableDeliveryBoys.map((b) => b._id);
+      if (candidates.length) {
+        await order.save();
+        return NextResponse.json(
+          { message: "There are no available delivery boys." },
+          { status: 300 },
+        );
+      }
     }
   } catch (error) {
     console.log(error);
