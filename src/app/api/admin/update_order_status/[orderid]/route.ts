@@ -53,7 +53,7 @@ export async function POST(
         await order.save();
         return NextResponse.json(
           { message: "There are no available delivery boys." },
-          { status: 300 },
+          { status: 200 },
         );
       }
     }
