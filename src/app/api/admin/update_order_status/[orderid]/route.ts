@@ -49,13 +49,21 @@ export async function POST(
       );
 
       const candidates = avilableDeliveryBoys.map((b) => b._id);
-      if (candidates.length) {
+
+      if (candidates.length == 0) {
         await order.save();
         return NextResponse.json(
           { message: "There are no available delivery boys." },
           { status: 200 },
         );
       }
+
+      // notification give to candidates
+      const deliveryAssignment = await DeliveryAssignment.create({
+        order: order._id,
+        brodcastedTo: candidates,
+        status: "brodcasted",
+      });
     }
   } catch (error) {
     console.log(error);
