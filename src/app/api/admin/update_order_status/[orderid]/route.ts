@@ -17,7 +17,8 @@ export async function POST(
       return NextResponse.json({ message: "Order not found" }, { status: 400 });
     }
     order.status = status;
-    let availableDeliveryBoys: any = [];
+
+    let deliveryBoysPayload: any = [];
     if (status === "Out of delivery" && !order.assignment) {
       const { latitude, longitude } = order.adress;
 
@@ -44,18 +45,36 @@ export async function POST(
       }).distinct("assignedTo");
 
       const bysuIdSet = new Set(busyId.map((b) => String(b)));
+
       const avilableDeliveryBoys = nearByDeliveryBoys.filter(
         (b) => !bysuIdSet.has(String(b._id)),
       );
 
       const candidates = avilableDeliveryBoys.map((b) => b._id);
-      if (candidates.length) {
+
+      if (candidates.length == 0) {
         await order.save();
         return NextResponse.json(
           { message: "There are no available delivery boys." },
-          { status: 300 },
+          { status: 200 },
         );
       }
+
+      // notification give to candidates
+      const deliveryAssignment = await DeliveryAssignment.create({
+        order: order._id,
+        brodcastedTo: candidates,
+        status: "brodcasted",
+      });
+
+      order.assignment = deliveryAssignment._id;
+      deliveryBoysPayload = avilableDeliveryBoys.map((b) => ({
+        id: b._id,
+        name: b.name,
+        mobile: b.mobile,
+        latitude: b.location.coordinates[1],
+        longitude: b.location.coordinates[0],
+      }));
     }
   } catch (error) {
     console.log(error);
