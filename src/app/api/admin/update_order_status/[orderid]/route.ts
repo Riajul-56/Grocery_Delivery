@@ -6,12 +6,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { orderId: string } },
+  { params }: { params: Promise<{ orderId: string }> },
 ) {
   try {
     await connectDb();
     const { orderId } = await params;
     const { status } = await req.json();
+
     const order = await Order.findById(orderId).populate("user");
     if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 400 });
@@ -19,8 +20,16 @@ export async function POST(
     order.status = status;
 
     let deliveryBoysPayload: any = [];
-    if (status === "Out of delivery" && !order.assignment) {
-      const { latitude, longitude } = order.adress;
+
+    if (status === "out of delivery" && !order.assignment) {
+      const { latitude, longitude } = order.address;
+
+      if (!latitude || !longitude) {
+        return NextResponse.json(
+          { message: "Location not found" },
+          { status: 400 },
+        );
+      }
 
       const nearByDeliveryBoys = await User.find({
         role: "deliveryBoy",
@@ -29,7 +38,7 @@ export async function POST(
           $near: {
             $geometry: {
               type: "Point",
-              coordinates: [Number(latitude), Number(longitude)],
+              coordinates: [Number(longitude), Number(latitude)],
             },
             $maxDistance: 10000, //10 km
           },
@@ -41,7 +50,7 @@ export async function POST(
       //when delivery boy busy with other order it find by id
       const busyId = await DeliveryAssignment.find({
         assignedTo: { $in: nearById },
-        status: { $nin: ["brodcasted", "completed"] },
+        status: { $nin: ["broadcasted", "completed"] },
       }).distinct("assignedTo");
 
       const bysuIdSet = new Set(busyId.map((b) => String(b)));
@@ -54,6 +63,7 @@ export async function POST(
 
       if (candidates.length == 0) {
         await order.save();
+
         return NextResponse.json(
           { message: "There are no available delivery boys." },
           { status: 200 },
@@ -63,8 +73,8 @@ export async function POST(
       // notification give to candidates
       const deliveryAssignment = await DeliveryAssignment.create({
         order: order._id,
-        brodcastedTo: candidates,
-        status: "brodcasted",
+        broadcastedTo: candidates,
+        status: "broadcasted",
       });
 
       order.assignment = deliveryAssignment._id;
@@ -75,8 +85,25 @@ export async function POST(
         latitude: b.location.coordinates[1],
         longitude: b.location.coordinates[0],
       }));
+      await deliveryAssignment.populate("order");
     }
+
+    await order.save();
+    await order.populate("user");
+
+    return NextResponse.json(
+      {
+        assignment: order.assignment?._id,
+        availableBoys: deliveryBoysPayload,
+      },
+      { status: 200 },
+    );
   } catch (error) {
-    console.log(error);
+    return NextResponse.json(
+      {
+        message: `update status error ${error}`,
+      },
+      { status: 500 },
+    );
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 import { IOrder } from "@/models/order.model";
+import axios from "axios";
 import {
   ChevronDown,
   ChevronUp,
@@ -18,6 +19,22 @@ import { useState } from "react";
 const AdminOrderCard = ({ order }: { order: IOrder }) => {
   const statusOptions = ["pending", "out of delivery"];
   const [expended, setExpended] = useState(false);
+
+  //========== Update order status functionality start ===============//
+
+  const updateStatus = async (orderId: string, status: string) => {
+    try {
+      const result = await axios.post(
+        `/api/admin/update_order_status/${orderId}`,
+        { status },
+      );
+      console.log("Updating order:", orderId, "to status:", status);
+    } catch (error: any) {
+      console.log("ERROR:", error.response?.data);
+    }
+  };
+
+  //========== Update order status functionality end ===============//
 
   return (
     <motion.div
@@ -120,7 +137,13 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             {order.status}
           </span>
 
-          <select className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none">
+          <select
+            className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
+            value={order.status}
+            onChange={(e) =>
+              updateStatus(order._id?.toString()!, e.target.value)
+            }
+          >
             {statusOptions.map((st) => (
               <option key={st} value={st}>
                 {st.toUpperCase()}
