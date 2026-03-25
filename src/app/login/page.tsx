@@ -92,135 +92,90 @@ function Login() {
           delay: 0.3,
         }}
       >
-        // ========================= Helper Functions =========================
+        {/* ===================== Email Input========================= */}
 
-// handle email input change
-const handleEmailChange = (e) => {
-  const { value } = e.target;
-  setEmail(value);
-};
+        <div className="relative mt-4">
+          <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+          <input
+            type="email"
+            placeholder="Enter Your Email"
+            className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+          />
+        </div>
 
-// handle password input change
-const handlePasswordChange = (e) => {
-  const { value } = e.target;
-  setPassword(value);
-};
+        {/* ===================== Password Input========================= */}
 
-// toggle password visibility
-const togglePasswordVisibility = () => {
-  setShowPassword((prev) => !prev);
-};
+        <div className="relative mt-4">
+          <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter Your Password"
+            className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+          {showPassword ? (
+            <EyeOff
+              className="absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer"
+              onClick={() => setShowPassword(false)}
+            />
+          ) : (
+            <EyeIcon
+              className="absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer"
+              onClick={() => setShowPassword(true)}
+            />
+          )}
+        </div>
 
-// check form validation
-const isFormValid = email !== "" && password !== "";
+        {/* ===================== Confirm Password Input========================= */}
 
-// button disable logic
-const isButtonDisabled = !isFormValid || loading;
+        {(() => {
+          const formValidation = email !== "" && password !== "";
+          return (
+            <button
+              type="submit"
+              disabled={!formValidation || loading}
+              className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex items-center justify-center gap-2 mt-3.5 ${
+                formValidation
+                  ? "bg-green-500 hover:bg-green-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Login"}
+            </button>
+          );
+        })()}
 
+        {/* =========================== OR Border ========================*/}
 
+        <div className="flex items-center gap-2 text-gray-400 text-sm mt-3.5">
+          <span className="flex-1 h-px bg-gray-200"></span>
+          OR
+          <span className="flex-1 h-px bg-gray-200"></span>
+        </div>
 
-{/* ===================== Email Input========================= */}
+        {/* =========================== Google Sign In Button ========================*/}
 
-<div className="relative mt-4">
+        <div
+          className="w-full flex iitems-center justify-center gap-3 border border-gray-300 hover:bg-gray-100 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+        >
+          <Image src={googleImage} alt="Google" width={20} height={20} />
+          Continue with Google
+        </div>
+      </motion.form>
 
-  {/* email icon */}
-  <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+      <p
+        className="text-gray-600 mt-6 text-sm flex items-center gap-1 cursor-pointer"
+        onClick={() => router.push("/register")}
+      >
+        Want to create an account? <LogIn className="w-4 h-4" />{" "}
+        <span className="text-green-600 cursor-pointer">Sign Up</span>
+      </p>
+    </div>
+  );
+}
 
-  <input
-    type="email"
-    placeholder="Enter Your Email"
-    className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
-    onChange={handleEmailChange}
-    value={email}
-  />
-
-</div>
-
-
-
-{/* ===================== Password Input========================= */}
-
-<div className="relative mt-4">
-
-  {/* password icon */}
-  <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-
-  <input
-    type={showPassword ? "text" : "password"}
-    placeholder="Enter Your Password"
-    className="w-full border border-gray-300 rounded-xl py-3 pl-30 pr-15 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
-    onChange={handlePasswordChange}
-    value={password}
-  />
-
-  {/* toggle password icon */}
-  {showPassword ? (
-    <EyeOff
-      className="absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer"
-      onClick={togglePasswordVisibility}
-    />
-  ) : (
-    <EyeIcon
-      className="absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer"
-      onClick={togglePasswordVisibility}
-    />
-  )}
-
-</div>
-
-
-
-{/* ===================== Login Button ========================== */}
-
-<button
-  type="submit"
-  disabled={isButtonDisabled}
-  className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex items-center justify-center gap-2 mt-3.5 ${
-    isFormValid
-      ? "bg-green-500 hover:bg-green-700 text-white"
-      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-  }`}
->
-
-  {/* loader or login text */}
-  {loading ? (
-    <Loader2 className="w-5 h-5 animate-spin" />
-  ) : (
-    "Login"
-  )}
-
-</button>
-
-
-
-{/* =========================== OR Border ========================*/}
-
-<div className="flex items-center gap-2 text-gray-400 text-sm mt-3.5">
-
-  <span className="flex-1 h-px bg-gray-200"></span>
-
-  OR
-
-  <span className="flex-1 h-px bg-gray-200"></span>
-
-</div>
-
-
-
-{/* =========================== Google Sign In Button ========================*/}
-
-<div
-  className="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-100 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 mt-3.5 cursor-pointer"
-  onClick={() => {
-
-    // trigger google authentication
-    signIn("google", { callbackUrl: "/" });
-
-  }}
->
-
-  <Image src={googleImage} alt="Google" width={20} height={20} />
-
-  Continue with Google
-
-</div>
+export default Login;
