@@ -46,6 +46,7 @@ function EditRoleMobile() {
     };
     checkForAdmin();
   }, []);
+
   // ============== admin Check Functionality end ===========================//
 
   return (

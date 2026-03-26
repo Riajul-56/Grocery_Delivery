@@ -32,7 +32,7 @@ export async function POST(
       }
 
       const nearByDeliveryBoys = await User.find({
-        role: "deliveryBoy",
+        role: "delivery",
         location: {
           //location gives us some operator
           $near: {
