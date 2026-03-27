@@ -1,7 +1,11 @@
-import React from "react";
+import DeliveryBoyDashBoard from "./DeliveryBoyDashBoard";
 
 const DeliveryBoydb = () => {
-  return <div>DeliveryBoydb</div>;
+  return (
+    <>
+      <DeliveryBoyDashBoard />
+    </>
+  );
 };
 
 export default DeliveryBoydb;
