@@ -31,6 +31,21 @@ const DeliveryBoyDashBoard = () => {
 
   // ================= status change functionality end ================== //
 
+  // ================ accept order start ============================//
+
+  const handleAccept = async (id: string) => {
+    try {
+      const result = await axios.get(
+        `/api/delivery/assignment/${id}/accept_assignment`,
+      );
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ================ accept order end ============================//
+
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
       <div className="max-w-3xl mx-auto">
@@ -56,7 +71,10 @@ const DeliveryBoyDashBoard = () => {
             {/* ================ order address end ==================== */}
 
             <div className="flex gap-3 mt-4">
-              <button className="flex-1 bg-green-600 text-white py-2 rounded-lg cursor-pointer">
+              <button
+                className="flex-1 bg-green-600 text-white py-2 rounded-lg cursor-pointer"
+                onClick={() => handleAccept(a?._id)}
+              >
                 Accept
               </button>
 
