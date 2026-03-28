@@ -1,5 +1,6 @@
 "use client";
 
+import { getSocket } from "@/lib/socket";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,18 @@ const DeliveryBoyDashBoard = () => {
     };
     fetchAssignment();
   }, []);
+
+  // ================= status change functionality start ================== //
+
+  useEffect((): any => {
+    const socket = getSocket();
+    socket.on("new-assignment", ({ deliveryAssignment }) => {
+      setAssignment((prev) => [...prev, deliveryAssignment]);
+    });
+    return () => socket.off("new-assignment");
+  }, []);
+
+  // ================= status change functionality end ================== //
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">

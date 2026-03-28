@@ -1,4 +1,5 @@
 "use client";
+import { getSocket } from "@/lib/socket";
 import { IOrder } from "@/models/order.model";
 import {
   ChevronDown,
@@ -10,12 +11,28 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function UserOrderCard({ order }: { order: IOrder }) {
   // ================== item toggle functionality start ========================//
   const [expended, setExpended] = useState(false);
   // ================== item toggle functionality end ========================//
+
+  // ============== order status change function start ================ //
+
+  const [status, setStatus] = useState(order.status);
+
+  useEffect((): any => {
+    const socket = getSocket();
+    socket.on("order-status-update", (data) => {
+      if (data.orderId.toString() == order?._id!.toString()) {
+        setStatus(data.status);
+      }
+    });
+    return () => socket.off("order-status-update");
+  }, []);
+
+  // ============== order status change function end ================ //
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -76,9 +93,9 @@ function UserOrderCard({ order }: { order: IOrder }) {
           </span>
 
           <span
-            className={`px-3 py-1 text-xs font-semibold border rounded-full ${getStatusColor(order.status)}`}
+            className={`px-3 py-1 text-xs font-semibold border rounded-full ${getStatusColor(status)}`}
           >
-            {order.status}
+            {status}
           </span>
         </div>
       </div>
@@ -184,7 +201,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
             <span>
               Delivery :{" "}
               <span className="text-green-700 font-semibold">
-                ${order.status}
+                ${status}
               </span>{" "}
             </span>
           </div>
