@@ -325,82 +325,65 @@ const Navbar = ({ user }: { user: IUser }) => {
                   </Link>
                 )}
 
-                {/* ================ My Order for user End ========================= */}
+                {/* ================ My Oder for user End ========================= */}
 
-{/* ================ Log Out Button Start ========================= */}
+                {/* ================ Log in button for Start ========================= */}
 
-<button
-  className="flex items-center gap-2 w-full text-left px-3 py-3 hover:bg-red-100 rounded-lg text-gray-700 font-medium cursor-pointer transition-colors duration-200"
-  title="Log out from your account"
-  onClick={() => {
-    setOpen(false);
-    signOut({ callbackUrl: "/login" });
-  }}
->
-  <LogOut className="w-5 h-5 text-red-600" />
-  <span className="text-sm">Log Out</span>
-</button>
+                <button
+                  className="flex items-center gap-2 w-full text-left px-2 py-3 hover:bg-red-100 rounded-lg text-gray-700 font-medium cursor-pointer"
+                  onClick={() => {
+                    setOpen(false);
+                    signOut({ callbackUrl: "/login" });
+                  }}
+                >
+                  <LogOut className="w-5 h-5 text-red-600" />
+                  Log Out
+                </button>
 
-{/* ================ Log Out Button End ========================= */}
-</motion.div>
-)}
-</AnimatePresence>
+                {/* ================ Log in button for End ========================= */}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-{/* ================= Search Bar Start ================= */}
-<AnimatePresence>
-  {searchBarOpen && (
-    <motion.div
-      className="fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-xl bg-white rounded-full shadow-lg z-40 flex items-center px-4 py-2 border border-gray-200"
-      initial={{
-        opacity: 0,
-        y: -10,
-        scale: 0.95,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scale: 1,
-      }}
-      transition={{
-        duration: 0.35,
-      }}
-      exit={{
-        opacity: 0,
-        y: -10,
-        scale: 0.95,
-      }}
-    >
-      {/* Search Icon */}
-      <Search className="text-gray-500 w-5 h-5 mr-2" />
+          <AnimatePresence>
+            {searchBarOpen && (
+              <motion.div
+                className="fixed top-24 left-1/2 -translate-x-1/2 w-[90%] bg-white rounded-full shadow-lg z-40 flex items-center px-4 py-2"
+                initial={{
+                  opacity: 0,
+                  y: -10,
+                  scale: 0.95,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              >
+                <Search className="text-gray-500 w-5 h-5 mr-2" />
+                <form className="grow">
+                  <input
+                    type="text"
+                    placeholder="Search groceries..."
+                    className="w-full outline-none text-gray-700"
+                  />
+                </form>
 
-      {/* Search Form */}
-      <form className="grow">
-        <input
-          type="text"
-          placeholder="Search groceries..."
-          className="w-full outline-none text-gray-700 placeholder-gray-400 text-sm"
-        />
-      </form>
-
-      {/* Close Button */}
-      <button
-        className="p-1 hover:bg-gray-100 rounded-full"
-        onClick={() => setSearchBarOpen(false)}
-      >
-        <X className="text-gray-500 w-5 h-5" />
-      </button>
-    </motion.div>
-  )}
-</AnimatePresence>
-{/* ================= Search Bar End ================= */}
-
-</div>
-</div>
-
-{sideBar}
-
-</div>
-);
+                <button onClick={() => setSearchBarOpen(false)}>
+                  <X className="text-gray-500 w-5 h-5" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+      {sideBar}
+    </div>
+  );
 };
 
 export default Navbar;
