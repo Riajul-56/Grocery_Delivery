@@ -14,10 +14,10 @@ import {
   User,
   UserCheck,
 } from "lucide-react";
-import mongoose from "mongoose";
+import mongoose, { set } from "mongoose";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //========== delivery boy assigned show fuction start ===============//
 
@@ -64,7 +64,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
   //========== Update order status functionality start ===============//
 
-  const [status, setStatus] = useState<string>(order.status);
+  const [status, setStatus] = useState<string>("pending");
 
   const updateStatus = async (orderId: string, status: string) => {
     try {
@@ -74,10 +74,15 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
       );
       console.log(result.data);
       setStatus(status);
-    } catch (error: any) {
-      console.log("ERROR:", error.response?.data);
+    } catch (error) {
+      console.log(error);
     }
   };
+  useEffect(() => {
+    setStatus(order.status);
+  }, [order]);
+
+  //========== Update order status functionality end ===============//
 
   return (
     <motion.div
