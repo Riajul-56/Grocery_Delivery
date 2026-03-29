@@ -9,6 +9,7 @@ import {
   Package,
   PhoneCall,
   Scooter,
+  Truck,
   UserCheck,
 } from "lucide-react";
 import mongoose from "mongoose";
@@ -162,26 +163,36 @@ function UserOrderCard({ order }: { order: IOrder }) {
         {/* ============== show assigned delivery boy start ============= */}
 
         {order.assignedDeliveryBoy && (
-          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 text-sm text-gray-700">
-              <UserCheck className="text-blue-600" size={18} />
-              <div className="font-semibold text-gray-800 ">
-                <p className="text-xs text-gray-600">
-                  Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
-                </p>
-                <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
-                  <PhoneCall className="text-red-600" /> +880{" "}
-                  {order.assignedDeliveryBoy.mobile}
-                </p>
+          <>
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <UserCheck className="text-blue-600" size={18} />
+                <div className="font-semibold text-gray-800 ">
+                  <p className="text-xs text-gray-600">
+                    Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
+                  </p>
+                  <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
+                    <PhoneCall className="text-red-600" /> +880{" "}
+                    {order.assignedDeliveryBoy.mobile}
+                  </p>
+                </div>
               </div>
+              <a
+                href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
+                className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
+              >
+                Call
+              </a>
             </div>
-            <a
-              href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
-              className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
-            >
-              Call
-            </a>
-          </div>
+
+            {/* ============== live tracking button start============= */}
+
+            <button className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer">
+              <Truck size={18} /> Track Your Order
+            </button>
+
+            {/* ============== live tracking button boy end============= */}
+          </>
         )}
 
         {/* ============== show assigned delivery boy end============= */}
