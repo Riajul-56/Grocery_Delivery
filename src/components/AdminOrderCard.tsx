@@ -1,5 +1,5 @@
 "use client";
-import { IOrder } from "@/models/order.model";
+import { IUser } from "@/models/user.model";
 import axios from "axios";
 import {
   ChevronDown,
@@ -8,13 +8,55 @@ import {
   MapPin,
   Package,
   Phone,
+  PhoneCall,
   Scooter,
   Timer,
   User,
+  UserCheck,
 } from "lucide-react";
+import mongoose from "mongoose";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
+
+//========== delivery boy assigned show fuction start ===============//
+
+interface IOrder {
+  _id?: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  items: [
+    {
+      grocery: mongoose.Types.ObjectId;
+      name: string;
+      price: string;
+      unit: string;
+      image: string;
+      quantity: number;
+    },
+  ];
+
+  isPaid?: boolean;
+  totalAmount: number;
+  paymentMethod: "cod" | "online";
+  address: {
+    fullName: string;
+    city: string;
+    state: string;
+    country: string;
+    postCode: string;
+    fullAddress: string;
+    mobile: string;
+    latitude: number;
+    longitude: number;
+  };
+
+  assignedDeliveryBoy?: IUser;
+  assignment?: mongoose.Types.ObjectId;
+  status: "pending" | "out of delivery" | "delivered";
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+//========== delivery boy assigned show fuction end ===============//
 
 const AdminOrderCard = ({ order }: { order: IOrder }) => {
   const statusOptions = ["pending", "out of delivery"];
@@ -36,8 +78,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
       console.log("ERROR:", error.response?.data);
     }
   };
-
-  //========== Update order status functionality end ===============//
 
   return (
     <motion.div
@@ -121,6 +161,31 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                 : "Online Payment"}
             </span>
           </p>
+
+          {/* ============== show assigned delivery boy ============= */}
+
+          {order.assignedDeliveryBoy && (
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <UserCheck className="text-blue-600" size={18} />
+                <div className="font-semibold text-gray-800 ">
+                  <p className="text-xs text-gray-600">
+                    Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
+                  </p>
+                  <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
+                    <PhoneCall className="text-red-600" /> +880{" "}
+                    {order.assignedDeliveryBoy.mobile}
+                  </p>
+                </div>
+              </div>
+              <a
+                href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
+                className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
+              >
+                Call
+              </a>
+            </div>
+          )}
         </div>
         {/* ================ card header left End ======================= */}
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IUser {
+export interface IUser {
   _id?: mongoose.Types.ObjectId; //? Optional ID field
   name: string;
   email: string;
@@ -8,7 +8,7 @@ interface IUser {
   mobile?: string; //? optional mobile field
   role: "user" | "admin" | "deliveryBoy";
   image?: string;
-  location: {
+  location?: {
     type: {
       type: StringConstructor;
       enum: string[];
