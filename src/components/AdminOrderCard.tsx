@@ -233,90 +233,78 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
       {/* =========================  Item details start =========================== */}
 
-      <div className="border-t border-gray-200 mt-3 pt-3">
-        <button
-          onClick={() => setExpended((prev) => !prev)}
-          className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
-        >
-          <span className="flex items-center gap-2">
-            <Package size={16} className="text-green-600" />
-            {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
-          </span>
-          {expended ? (
-            <ChevronUp size={16} className="text-green-600" />
-          ) : (
-            <ChevronDown size={16} className="text-green-600" />
-          )}
-        </button>
+<div className="mt-3 pt-3 border-t border-gray-200">
+  <button
+    onClick={() => setExpended((prev) => !prev)}
+    className="w-full flex items-center justify-between text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
+  >
+    <span className="flex items-center gap-2">
+      <Package className="text-green-600" size={16} />
+      {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
+    </span>
 
-        <motion.div
-          className="overflow-hidden"
-          initial={{
-            opacity: 0,
-            height: 0,
-          }}
-          animate={{
-            opacity: expended ? 1 : 0,
-            height: expended ? "auto" : 0,
-          }}
-          transition={{
-            duration: 0.3,
-          }}
-        >
-          <div className="nt-3 space-y-3">
-            {order.items.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
-              >
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={48}
-                    height={48}
-                    className=" rounded-lg object-cover border border-gray-200"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {item.quantity} x {item.unit}
-                    </p>
-                  </div>
-                </div>
+    {expended ? (
+      <ChevronUp className="text-green-600" size={16} />
+    ) : (
+      <ChevronDown className="text-green-600" size={16} />
+    )}
+  </button>
 
-                <p className="text-sm font-semibold text-gray-800">
-                  ৳ {Number(item.price) * item.quantity}
+  <motion.div
+    className="overflow-hidden"
+    initial={{ opacity: 0, height: 0 }}
+    animate={{
+      opacity: expended ? 1 : 0,
+      height: expended ? "auto" : 0,
+    }}
+    transition={{ duration: 0.3 }}
+  >
+    <div className="space-y-3 mt-3">
+      {order.items.map((item, index) => {
+        const itemTotal = Number(item.price) * item.quantity;
+
+        return (
+          <div
+            key={index}
+            className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 mt-3 hover:bg-gray-100 transition"
+          >
+            <div className="flex items-center gap-3">
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={48}
+                height={48}
+                className="object-cover rounded-lg border border-gray-200"
+              />
+
+              <div>
+                <p className="text-sm font-medium text-gray-800">
+                  {item.name}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  {item.quantity} x {item.unit}
                 </p>
               </div>
-            ))}
+            </div>
+
+            <p className="text-sm font-semibold text-gray-800">
+              ৳ {itemTotal}
+            </p>
           </div>
-        </motion.div>
-      </div>
-      {/* ========================= Item details end =========================== */}
+        );
+      })}
+    </div>
+  </motion.div>
+</div>
 
-      {/* ================ total amount start ======================== */}
-      <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
-        <div className="flex items-center gap-2 text-gray-700 text-sm">
-          <Scooter className="text-green-600" size={16} />
-          <span>
-            Delivery :{" "}
-            <span className="text-green-700 font-semibold">{status}</span>{" "}
-          </span>
-        </div>
+{/* ========================= Item details end =========================== */}
 
-        <div>
-          Total:{" "}
-          <span className="text-green-700 font-bold">
-            ৳ {order.totalAmount}
-          </span>
-        </div>
-      </div>
-      {/* ================ total amount end ======================== */}
-    </motion.div>
-  );
+
+{/* ================ total amount end ======================== */}
+
+</motion.div>
+);
 };
 
 export default AdminOrderCard;
