@@ -19,11 +19,13 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-//========== delivery boy assigned show fuction start ===============//
+//================ Order Interface (Order Data Structure) =================//
 
 interface IOrder {
   _id?: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId;
+
+  // Ordered grocery items
   items: [
     {
       grocery: mongoose.Types.ObjectId;
@@ -38,6 +40,8 @@ interface IOrder {
   isPaid?: boolean;
   totalAmount: number;
   paymentMethod: "cod" | "online";
+
+  // Delivery address information
   address: {
     fullName: string;
     city: string;
@@ -50,22 +54,30 @@ interface IOrder {
     longitude: number;
   };
 
+  // Assigned delivery boy information
   assignedDeliveryBoy?: IUser;
   assignment?: mongoose.Types.ObjectId;
+
+  // Order status
   status: "pending" | "out of delivery" | "delivered";
+
   createdAt?: Date;
   updatedAt?: Date;
 }
-//========== delivery boy assigned show fuction end ===============//
+
+//================ Admin Order Card Component =================//
 
 const AdminOrderCard = ({ order }: { order: IOrder }) => {
   const statusOptions = ["pending", "out of delivery"];
+
+  // Toggle item list expand/collapse
   const [expended, setExpended] = useState(false);
 
-  //========== Update order status functionality start ===============//
+  //================ Order Status Update Logic =================//
 
   const [status, setStatus] = useState<string>("pending");
 
+  // Update order status from admin panel
   const updateStatus = async (orderId: string, status: string) => {
     try {
       const result = await axios.post(
@@ -78,11 +90,13 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
       console.log(error);
     }
   };
+
+  // Sync local status with order status
   useEffect(() => {
     setStatus(order.status);
   }, [order]);
 
-  //========== Update order status functionality end ===============//
+  //================ Component UI =================//
 
   return (
     <motion.div
@@ -101,21 +115,21 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
         delay: 0.3,
       }}
     >
-      {/* ============================= Card header Start =================================== */}
+      {/* ================= Card Header ================= */}
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-        {/* ================ card header left start ======================= */}
+
+        {/* ========= Left Section : Order Information ========= */}
 
         <div className="space-y-1">
-          {/*================ Order ID =============*/}
 
+          {/* Order ID */}
           <p className="text-lg font-bold flex items-center gap-2 text-green-700">
             <Package size={20} />
             Order #{order._id?.toString().slice(-6)}
           </p>
 
-          {/*================ Paid Or Unpaid =============*/}
-
+          {/* Payment Status */}
           <span
             className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border mt-2 ${
               order.isPaid
@@ -126,38 +140,35 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             {order.isPaid ? "paid" : "Unpaid"}
           </span>
 
-          {/*================ Time =============*/}
-
+          {/* Order Creation Time */}
           <p className="text-gray-500 text-sm mt-2 flex items-center gap-2">
             <Timer size={16} className="text-green-600" />
             {new Date(order.createdAt!).toLocaleString()}
           </p>
 
+          {/* Customer Information */}
           <div className="nt-3 space-y-1 text-gray-700 text-sm">
-            {/*================ Full Name =============*/}
 
+            {/* Customer Name */}
             <p className="flex items-center gap-2 font-semibold">
               <User size={16} className="text-green-600" />
               <span>{order?.address.fullName}</span>
             </p>
 
-            {/*================ Mobile Number =============*/}
-
+            {/* Customer Phone */}
             <p className="flex items-center gap-2 font-semibold">
               <Phone size={16} className="text-green-600" />
               <span>{order?.address.mobile}</span>
             </p>
 
-            {/*================ Address =============*/}
-
+            {/* Delivery Address */}
             <p className="flex items-center gap-2 font-semibold">
               <MapPin size={16} className="text-green-600" />
               <span>{order?.address.fullAddress}</span>
             </p>
           </div>
 
-          {/*================ Payemt method =============*/}
-
+          {/* Payment Method */}
           <p className="mt-3 flex items-center gap-2 text-sm text-gray-700 ">
             <CreditCard size={16} className="text-green-600" />
             <span>
@@ -167,8 +178,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             </span>
           </p>
 
-          {/* ============== show assigned delivery boy ============= */}
-
+          {/* Assigned Delivery Boy Info */}
           {order.assignedDeliveryBoy && (
             <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
               <div className="flex items-center gap-3 text-sm text-gray-700">
@@ -183,6 +193,8 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                   </p>
                 </div>
               </div>
+
+              {/* Call Delivery Boy */}
               <a
                 href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
                 className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
@@ -192,12 +204,12 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             </div>
           )}
         </div>
-        {/* ================ card header left End ======================= */}
 
-        {/* ================ card header Right Start ======================= */}
+        {/* ========= Right Section : Order Status ========= */}
 
         <div className="flex flex-col items-center md:items-end gap-2">
-          {/* ================ Status Start =============== */}
+
+          {/* Status Badge */}
           <span
             className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
               status === "delivered"
@@ -210,6 +222,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             {status}
           </span>
 
+          {/* Status Change Dropdown */}
           <select
             className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
             value={status}
@@ -223,109 +236,109 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
               </option>
             ))}
           </select>
-
-          {/* ================== Status End =============== */}
         </div>
-        {/* ================ card header Right End ======================= */}
       </div>
 
-      {/* ============================= Card header End =================================== */}
+      {/* ================= Item List Section ================= */}
 
-      {/* =========================  Item details start =========================== */}
+      <div className="border-t border-gray-200 mt-3 pt-3">
 
-<div className="mt-3 pt-3 border-t border-gray-200">
-  <button
-    onClick={() => setExpended((prev) => !prev)}
-    className="w-full flex items-center justify-between text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
-  >
-    <span className="flex items-center gap-2">
-      <Package className="text-green-600" size={16} />
-      {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
-    </span>
+        {/* Toggle Item List Button */}
+        <button
+          onClick={() => setExpended((prev) => !prev)}
+          className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
+        >
+          <span className="flex items-center gap-2">
+            <Package size={16} className="text-green-600" />
+            {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
+          </span>
 
-    {expended ? (
-      <ChevronUp className="text-green-600" size={16} />
-    ) : (
-      <ChevronDown className="text-green-600" size={16} />
-    )}
-  </button>
+          {expended ? (
+            <ChevronUp size={16} className="text-green-600" />
+          ) : (
+            <ChevronDown size={16} className="text-green-600" />
+          )}
+        </button>
 
-  <motion.div
-    className="overflow-hidden"
-    initial={{ opacity: 0, height: 0 }}
-    animate={{
-      opacity: expended ? 1 : 0,
-      height: expended ? "auto" : 0,
-    }}
-    transition={{ duration: 0.3 }}
-  >
-    <div className="space-y-3 mt-3">
-      {order.items.map((item, index) => {
-        const itemTotal = Number(item.price) * item.quantity;
+        {/* Animated Item List */}
+        <motion.div
+          className="overflow-hidden"
+          initial={{
+            opacity: 0,
+            height: 0,
+          }}
+          animate={{
+            opacity: expended ? 1 : 0,
+            height: expended ? "auto" : 0,
+          }}
+          transition={{
+            duration: 0.3,
+          }}
+        >
+          <div className="nt-3 space-y-3">
 
-        return (
-          <div
-            key={index}
-            className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2 mt-3 hover:bg-gray-100 transition"
-          >
-            <div className="flex items-center gap-3">
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={48}
-                height={48}
-                className="object-cover rounded-lg border border-gray-200"
-              />
+            {/* Render Ordered Items */}
+            {order.items.map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
+              >
+                <div className="flex items-center gap-3">
 
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  {item.name}
-                </p>
+                  {/* Item Image */}
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={48}
+                    height={48}
+                    className=" rounded-lg object-cover border border-gray-200"
+                  />
 
-                <p className="text-xs text-gray-500">
-                  {item.quantity} x {item.unit}
+                  {/* Item Name & Quantity */}
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">
+                      {item.name}
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      {item.quantity} x {item.unit}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Item Total Price */}
+                <p className="text-sm font-semibold text-gray-800">
+                  ৳ {Number(item.price) * item.quantity}
                 </p>
               </div>
-            </div>
-
-            <p className="text-sm font-semibold text-gray-800">
-              ৳ {itemTotal}
-            </p>
+            ))}
           </div>
-        );
-      })}
-    </div>
-  </motion.div>
-</div>
+        </motion.div>
+      </div>
 
-{/* ========================= Item details end =========================== */}
+      {/* ================= Total Amount Section ================= */}
 
-{/* ================ total amount start ======================== */}
-<div className="flex items-center justify-between mt-3 pt-3 border-t text-sm font-semibold text-gray-800">
+      <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
 
-  <div className="flex items-center gap-2 text-gray-700 text-sm">
-    <Scooter size={16} className="text-green-600" />
+        {/* Delivery Status */}
+        <div className="flex items-center gap-2 text-gray-700 text-sm">
+          <Scooter className="text-green-600" size={16} />
+          <span>
+            Delivery :{" "}
+            <span className="text-green-700 font-semibold">{status}</span>{" "}
+          </span>
+        </div>
 
-    <span>
-      Delivery :
-      <span className="text-green-700 font-semibold ml-1">
-        {status}
-      </span>
-    </span>
-  </div>
-
-  <div>
-    Total :
-    <span className="text-green-700 font-bold ml-1">
-      ৳ {order.totalAmount}
-    </span>
-  </div>
-
-</div>
-{/* ================ total amount end ======================== */}
-
-</motion.div>
-);
+        {/* Total Order Amount */}
+        <div>
+          Total:{" "}
+          <span className="text-green-700 font-bold">
+            ৳ {order.totalAmount}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
 };
 
 export default AdminOrderCard;
