@@ -3,15 +3,21 @@
 import { getSocket } from "@/lib/socket";
 import { RootState } from "@/redux/store";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import LiveMap from "./LiveMap";
+
+interface ILocation {
+  latitude: number;
+  longitude: number;
+}
 
 const DeliveryBoyDashBoard = () => {
   const [assignment, setAssignment] = useState<any[]>([]);
   const { userData } = useSelector((state: RootState) => state.user);
 
   const [activeOrder, setActiveOrder] = useState<any>(null);
-  const [userLocation, setUserLocation] = useState<any>(null);
+  const [userLocation, setUserLocation] = useState<ILocation>();
 
   const fetchAssignment = async () => {
     try {
@@ -21,6 +27,43 @@ const DeliveryBoyDashBoard = () => {
       console.log(error);
     }
   };
+
+  // ================= delivery location update functionality start ================== //
+
+  const [deliveryLocation, setDeliveryLocation] = useState<ILocation>();
+
+  // ================= delivery location update  functionality end ================== //
+
+  // ================= geo update functionality start ================== //
+  useEffect(() => {
+    const socket = getSocket();
+    if (!userData?._id) return;
+    if (!navigator.geolocation) return;
+    const watcher = navigator.geolocation.watchPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        setDeliveryLocation({
+          latitude: lat,
+          longitude: lon,
+        });
+
+        socket.emit("update-location", {
+          userId: userData?._id,
+          latitude: lat,
+          longitude: lon,
+        });
+      },
+      (err) => {
+        console.log(err);
+      },
+      { enableHighAccuracy: true },
+    );
+    return () => navigator.geolocation.clearWatch(watcher);
+  }, [userData?._id]);
+
+  // ================= geo update functionality start ================== //
 
   // ================= status change functionality start ================== //
 
@@ -58,7 +101,7 @@ const DeliveryBoyDashBoard = () => {
         setActiveOrder(result.data.assignment);
         setUserLocation({
           latitude: result.data.assignment.order.address.latitude,
-          logitude: result.data.assignment.order.address.logitude,
+          longitude: result.data.assignment.order.address.logitude,
         });
       }
     } catch (error) {
@@ -75,15 +118,25 @@ const DeliveryBoyDashBoard = () => {
 
   if (activeOrder && userLocation) {
     return (
-      <div className="p-4 min-h-screen bg-gray-50 pt-[150px]">
+      <div className="p-4 min-h-screen bg-gray-50 pt-37.5">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold text-green-700 mb-2">
             Active Delivery
           </h1>
-
           <p className="text-gray-600 text-sm mb-4">
-            order#{activeOrder.order._id.slice(-6)}
+            order {""}
+            <span className="text-green-600 text-semibold">
+              #{activeOrder.order._id.slice(-6)}
+            </span>
           </p>
+
+          {/* ================live map Start ============================*/}
+
+          <div className="rounded-xl border shadow-lg overflow-hidden mb-6">
+            <LiveMap />
+          </div>
+
+          {/* ================live map Start ============================ */}
         </div>
       </div>
     );
