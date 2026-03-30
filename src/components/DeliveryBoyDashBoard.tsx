@@ -1,23 +1,26 @@
 "use client";
 
 import { getSocket } from "@/lib/socket";
+import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const DeliveryBoyDashBoard = () => {
   const [assignment, setAssignment] = useState<any[]>([]);
+  const { userData } = useSelector((state: RootState) => state.user);
 
-  useEffect(() => {
-    const fetchAssignment = async () => {
-      try {
-        const result = await axios.get("./api/delivery/get_assignment");
-        setAssignment(result.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAssignment();
-  }, []);
+  const [activeOrder, setActiveOrder] = useState<any>(null);
+  const [userLocation, setUserLocation] = useState<any>(null);
+
+  const fetchAssignment = async () => {
+    try {
+      const result = await axios.get("./api/delivery/get_assignment");
+      setAssignment(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // ================= status change functionality start ================== //
 
@@ -45,6 +48,46 @@ const DeliveryBoyDashBoard = () => {
   };
 
   // ================ accept order end ============================//
+
+  // ================ current order start ============================//
+
+  const fetchCurrentOrder = async () => {
+    try {
+      const result = await axios.get("/api/delivery/current_order");
+      if (result.data.active) {
+        setActiveOrder(result.data.assignment);
+        setUserLocation({
+          latitude: result.data.assignment.order.address.latitude,
+          logitude: result.data.assignment.order.address.logitude,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ================ current order end ============================//
+
+  useEffect(() => {
+    fetchCurrentOrder();
+    fetchAssignment();
+  }, [userData]);
+
+  if (activeOrder && userLocation) {
+    return (
+      <div className="p-4 min-h-screen bg-gray-50 pt-[150px]">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-2xl font-bold text-green-700 mb-2">
+            Active Delivery
+          </h1>
+
+          <p className="text-gray-600 text-sm mb-4">
+            order#{activeOrder.order._id.slice(-6)}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
