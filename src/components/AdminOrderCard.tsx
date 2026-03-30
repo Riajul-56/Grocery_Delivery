@@ -300,7 +300,28 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
 {/* ========================= Item details end =========================== */}
 
+{/* ================ total amount start ======================== */}
+<div className="flex items-center justify-between mt-3 pt-3 border-t text-sm font-semibold text-gray-800">
 
+  <div className="flex items-center gap-2 text-gray-700 text-sm">
+    <Scooter size={16} className="text-green-600" />
+
+    <span>
+      Delivery :
+      <span className="text-green-700 font-semibold ml-1">
+        {status}
+      </span>
+    </span>
+  </div>
+
+  <div>
+    Total :
+    <span className="text-green-700 font-bold ml-1">
+      ৳ {order.totalAmount}
+    </span>
+  </div>
+
+</div>
 {/* ================ total amount end ======================== */}
 
 </motion.div>
