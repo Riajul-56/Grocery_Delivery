@@ -1,6 +1,13 @@
-import React from "react";
+interface ILocation {
+  latitude: number;
+  longitude: number;
+}
 
-const LiveMap = () => {
+interface Iprops {
+  userLocation: ILocation;
+  deliveryBoyLocation: ILocation;
+}
+const LiveMap = ({ userLocation, deliveryBoyLocation }: Iprops) => {
   return <div>LiveMap</div>;
 };
 

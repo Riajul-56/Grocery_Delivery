@@ -17,7 +17,10 @@ const DeliveryBoyDashBoard = () => {
   const { userData } = useSelector((state: RootState) => state.user);
 
   const [activeOrder, setActiveOrder] = useState<any>(null);
-  const [userLocation, setUserLocation] = useState<ILocation>();
+  const [userLocation, setUserLocation] = useState<ILocation>({
+    latitude: 0,
+    longitude: 0,
+  });
 
   const fetchAssignment = async () => {
     try {
@@ -30,7 +33,10 @@ const DeliveryBoyDashBoard = () => {
 
   // ================= delivery location update functionality start ================== //
 
-  const [deliveryLocation, setDeliveryLocation] = useState<ILocation>();
+  const [deliveryBoyLocation, setDeliveryBoyLocation] = useState<ILocation>({
+    latitude: 0,
+    longitude: 0,
+  });
 
   // ================= delivery location update  functionality end ================== //
 
@@ -44,7 +50,7 @@ const DeliveryBoyDashBoard = () => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        setDeliveryLocation({
+        setDeliveryBoyLocation({
           latitude: lat,
           longitude: lon,
         });
@@ -133,7 +139,10 @@ const DeliveryBoyDashBoard = () => {
           {/* ================live map Start ============================*/}
 
           <div className="rounded-xl border shadow-lg overflow-hidden mb-6">
-            <LiveMap />
+            <LiveMap
+              userLocation={userLocation}
+              deliveryBoyLocation={deliveryBoyLocation}
+            />
           </div>
 
           {/* ================live map Start ============================ */}
