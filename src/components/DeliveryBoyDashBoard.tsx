@@ -107,7 +107,7 @@ const DeliveryBoyDashBoard = () => {
         setActiveOrder(result.data.assignment);
         setUserLocation({
           latitude: result.data.assignment.order.address.latitude,
-          longitude: result.data.assignment.order.address.logitude,
+          longitude: result.data.assignment.order.address.longitude,
         });
       }
     } catch (error) {
