@@ -61,7 +61,7 @@ const HeroSection = () => {
     <div className="relative w-[98%] mx-auto mt-32 h-[80vh] rounded-3xl overflow-hidden shadow-2xl ">
       
       {/* Background image animation */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="popLayout">
         <motion.div
           key={current}
           className="absolute inset-0"
