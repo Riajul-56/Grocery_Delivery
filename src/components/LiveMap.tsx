@@ -1,6 +1,12 @@
 "use client";
 import L, { LatLngExpression } from "leaflet";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  Polyline,
+  Popup,
+  TileLayer,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 interface ILocation {
@@ -26,6 +32,14 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
 
   const center = [userLocation.latitude, userLocation.longitude];
 
+  const linePositions =
+    deliveryBoyLocation && userLocation
+      ? [
+          [userLocation.latitude, userLocation.longitude],
+          [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude],
+        ]
+      : [];
+
   return (
     <div className="w-full h-125 rounded-xl overflow-hidden shadow relative">
       {/* ==================== Map Container start ==================== */}
@@ -43,7 +57,9 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
         <Marker
           position={[userLocation.latitude, userLocation.longitude]}
           icon={userIcon}
-        ></Marker>
+        >
+          <Popup>Delivery Address</Popup>
+        </Marker>
 
         {deliveryBoyLocation && (
           <Marker
@@ -54,6 +70,7 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
             icon={deliverBoyIcon}
           ></Marker>
         )}
+        <Polyline positions={linePositions as any} color="green" />
       </MapContainer>
 
       {/* ==================== Map Container end ==================== */}
