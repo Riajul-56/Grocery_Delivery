@@ -15,6 +15,7 @@ import {
 import mongoose from "mongoose";
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 //========== delivery boy assigned show fuction start ===============//
@@ -89,6 +90,10 @@ function UserOrderCard({ order }: { order: IOrder }) {
         return "bg-gray-100 text-gray-700 border-gray-300";
     }
   };
+
+  // ============== Track Order function start ================ //
+  const router = useRouter();
+  // ============== Track Order function end ================ //
 
   return (
     <motion.div
@@ -187,7 +192,10 @@ function UserOrderCard({ order }: { order: IOrder }) {
 
             {/* ============== live tracking button start============= */}
 
-            <button className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer">
+            <button
+              className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer"
+              onClick={() => router.push("/user/track_order")}
+            >
               <Truck size={18} /> Track Your Order
             </button>
 

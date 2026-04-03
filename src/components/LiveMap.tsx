@@ -7,7 +7,6 @@ import {
   Popup,
   TileLayer,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 
 interface ILocation {
   latitude: number;
@@ -68,7 +67,9 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
               deliveryBoyLocation.longitude,
             ]}
             icon={deliverBoyIcon}
-          ></Marker>
+          >
+            <Popup>Delivery Boy</Popup>
+          </Marker>
         )}
         <Polyline positions={linePositions as any} color="green" />
       </MapContainer>
