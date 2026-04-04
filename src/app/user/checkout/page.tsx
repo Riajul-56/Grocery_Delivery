@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import L, { LatLngExpression } from "leaflet";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 

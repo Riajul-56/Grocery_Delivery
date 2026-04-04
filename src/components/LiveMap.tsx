@@ -7,6 +7,7 @@ import {
   Popup,
   TileLayer,
 } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 interface ILocation {
   latitude: number;

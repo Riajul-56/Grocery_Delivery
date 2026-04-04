@@ -194,7 +194,9 @@ function UserOrderCard({ order }: { order: IOrder }) {
 
             <button
               className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer"
-              onClick={() => router.push("/user/track_order")}
+              onClick={() =>
+                router.push(`/user/track_order/${order._id?.toString()}`)
+              }
             >
               <Truck size={18} /> Track Your Order
             </button>
