@@ -291,7 +291,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
             <span>
               Delivery :{" "}
               <span className="text-green-700 font-semibold">
-                ${status}
+                {status}
               </span>{" "}
             </span>
           </div>

@@ -1,10 +1,10 @@
 "use client";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import React, { use, useEffect } from "react";
 
 const TrackOrder = ({ params }: { params: { orderId: string } }) => {
-  const orderId = useSearchParams();
+  const { orderId } = useParams();
   useEffect(() => {
     const getOrder = async () => {
       try {
@@ -14,7 +14,8 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         console.log(error);
       }
     };
-  });
+    getOrder();
+  }, []);
 
   return <div className="">page</div>;
 };
