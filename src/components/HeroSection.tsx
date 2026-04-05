@@ -65,10 +65,10 @@ const HeroSection = () => {
   <motion.div
     key={current}
     className="absolute inset-0"
-    initial={{ opacity: 0, y: 40, scale: 1.05 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    exit={{ opacity: 0, y: -40, scale: 0.95 }}
-    transition={{ duration: 0.9, ease: "easeInOut" }}
+    initial={{ opacity: 0, scale: 1.2, rotate: -3 }}
+    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+    exit={{ opacity: 0, scale: 0.8, rotate: 3 }}
+    transition={{ duration: 1, ease: "easeOut" }}
   >
     <Image
       src={slide[current]?.bg}
