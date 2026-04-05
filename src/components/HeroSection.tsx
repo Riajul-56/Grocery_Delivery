@@ -61,22 +61,22 @@ const HeroSection = () => {
     <div className="relative w-[98%] mx-auto mt-32 h-[80vh] rounded-3xl overflow-hidden shadow-2xl ">
       
       {/* Background image animation */}
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          key={current}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-        >
-          <Image
-            src={slide[current]?.bg}
-            fill
-            alt="slide"
-            priority
-            className="object-cover"
-          />
+<AnimatePresence mode="wait">
+  <motion.div
+    key={current}
+    className="absolute inset-0"
+    initial={{ opacity: 0, y: 40, scale: 1.05 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: -40, scale: 0.95 }}
+    transition={{ duration: 0.9, ease: "easeInOut" }}
+  >
+    <Image
+      src={slide[current]?.bg}
+      fill
+      alt="slide"
+      priority
+      className="object-cover"
+    />
 
           {/* Dark overlay for better text visibility */}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
