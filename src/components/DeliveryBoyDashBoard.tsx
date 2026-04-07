@@ -17,10 +17,15 @@ const DeliveryBoyDashBoard = () => {
   const { userData } = useSelector((state: RootState) => state.user);
 
   const [activeOrder, setActiveOrder] = useState<any>(null);
+
+  // ================= user location update functionality start ================== //
+
   const [userLocation, setUserLocation] = useState<ILocation>({
     latitude: 0,
     longitude: 0,
   });
+
+  // ================= user location update  functionality end ================== //
 
   const fetchAssignment = async () => {
     try {
