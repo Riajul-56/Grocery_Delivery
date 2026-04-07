@@ -112,8 +112,7 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
       console.log(location);
       setDeliveryBoyLocation({
         latitude: data.location.coordinates?.[1] ?? data.location.latitude,
-        longitude:
-          data.data.location.coordinates?.[0] ?? data.location.longitude,
+        longitude: data.location.coordinates?.[0] ?? data.location.longitude,
       });
     });
 
@@ -125,7 +124,7 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
       <div className="max-w-2xl mx-auto pb-24">
         {/* ================== header part start ===================== */}
 
-        <div className="sticky top-0 bg-white/80 backdrop:blur-xl p-4 border-b shadow flex gap-3 items-center z-999 ">
+        <div className="sticky top-10 bg-white/80 backdrop:blur-xl p-4 border-b shadow flex gap-3 items-center z-999 ">
           <button
             className="p-2 bg-green-100 rounded-full cursor-pointer"
             onClick={() => router.back()}
@@ -147,9 +146,8 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         {/* ================== header part end ===================== */}
 
         {/* ================== map part start ===================== */}
-        <div className="px-4 mt-6">
+        <div className="px-4 mt-20">
           <div className="rounded-3xl overflow-hidden border shadow">
-            {/* ✅ valid location না আসা পর্যন্ত Map render হবে না */}
             {userLocation.latitude !== 0 && userLocation.longitude !== 0 ? (
               <LiveMap
                 userLocation={userLocation}
