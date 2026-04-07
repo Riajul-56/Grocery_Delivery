@@ -6,9 +6,10 @@ import {
   Polyline,
   Popup,
   TileLayer,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-
+import { useEffect } from "react";
 
 interface ILocation {
   latitude: number;
@@ -18,6 +19,20 @@ interface ILocation {
 interface Iprops {
   userLocation: ILocation;
   deliveryBoyLocation: ILocation;
+}
+
+function Recenter({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (lat !== 0 && lng !== 0) {
+      map.setView([lat, lng], map.getZoom(), {
+        animate: true,
+      });
+    }
+  }, [lat, lng, map]);
+
+  return null;
 }
 
 function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
@@ -31,7 +46,8 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
     iconSize: [45, 45],
   });
 
-  const center = [userLocation.latitude, userLocation.longitude];
+  const centerLat = deliveryBoyLocation?.latitude || userLocation.latitude;
+  const centerLng = deliveryBoyLocation?.longitude || userLocation.longitude;
 
   const linePositions =
     deliveryBoyLocation && userLocation
@@ -46,10 +62,11 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
       {/* ==================== Map Container start ==================== */}
       <MapContainer
         className="w-full h-full"
-        center={center as LatLngExpression}
+        center={[centerLat, centerLng] as LatLngExpression}
         zoom={13}
         scrollWheelZoom={true}
       >
+        <Recenter lat={centerLat} lng={centerLng} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

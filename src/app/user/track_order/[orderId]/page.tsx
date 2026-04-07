@@ -1,5 +1,4 @@
 "use client";
-import LiveMap from "@/components/LiveMap";
 import { IUser } from "@/models/user.model";
 import { RootState } from "@/redux/store";
 import axios from "axios";
@@ -8,6 +7,17 @@ import mongoose from "mongoose";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import dynamic from "next/dynamic";
+import { getSocket } from "@/lib/socket";
+
+const LiveMap = dynamic(() => import("@/components/LiveMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
+      <p className="text-gray-500">Map loading...</p>
+    </div>
+  ),
+});
 
 interface IOrder {
   _id?: mongoose.Types.ObjectId;
@@ -96,6 +106,20 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
     getOrder();
   }, [userData?._id]);
 
+  useEffect((): any => {
+    const socket = getSocket();
+    socket.on("update_deliveryBoy_location", (data) => {
+      console.log(location);
+      setDeliveryBoyLocation({
+        latitude: data.location.coordinates?.[1] ?? data.location.latitude,
+        longitude:
+          data.data.location.coordinates?.[0] ?? data.location.longitude,
+      });
+    });
+
+    return () => socket.off("update_deliveryBoy_location");
+  }, [order]);
+
   return (
     <div className="w-full min-h-screen bg-linear-to-b from-green-50 to-white ">
       <div className="max-w-2xl mx-auto pb-24">
@@ -124,11 +148,18 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
 
         {/* ================== map part start ===================== */}
         <div className="px-4 mt-6">
-          <div className="rounded-3xl overflow-hidden border shadow ">
-            <LiveMap
-              userLocation={userLocation}
-              deliveryBoyLocation={deliveryBoyLocation}
-            />
+          <div className="rounded-3xl overflow-hidden border shadow">
+            {/* ✅ valid location না আসা পর্যন্ত Map render হবে না */}
+            {userLocation.latitude !== 0 && userLocation.longitude !== 0 ? (
+              <LiveMap
+                userLocation={userLocation}
+                deliveryBoyLocation={deliveryBoyLocation}
+              />
+            ) : (
+              <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
+                <p className="text-gray-500">Loading map...</p>
+              </div>
+            )}
           </div>
         </div>
         {/* ================== map part end ===================== */}
@@ -136,5 +167,4 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
     </div>
   );
 };
-
 export default TrackOrder;
