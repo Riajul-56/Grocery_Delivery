@@ -65,7 +65,7 @@ const MyOrder = () => {
           </div>
         ) : (
           <div className="mt-4 space-y-6">
-            {orders.map((order, index) => (
+            {orders.map((order:any, index) => (
               <motion.div
                 key={index}
                 initial={{
