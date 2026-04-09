@@ -1,0 +1,34 @@
+import mongoose from "mongoose";
+
+interface IMassage {
+  _id?: mongoose.Types.ObjectId;
+  roomId: mongoose.Types.ObjectId;
+  text: string;
+  senderId: mongoose.Types.ObjectId;
+  time: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const messageSchema = new mongoose.Schema<IMassage>(
+  {
+    roomId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ChatRoom",
+    },
+    text: {
+      type: String,
+    },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    time: String,
+  },
+  { timestamps: true },
+);
+
+const Message =
+  mongoose.models.Message || mongoose.model("Message", messageSchema);
+
+export default Message;
