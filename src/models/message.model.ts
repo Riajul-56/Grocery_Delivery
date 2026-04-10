@@ -14,7 +14,7 @@ const messageSchema = new mongoose.Schema<IMassage>(
   {
     roomId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ChatRoom",
+      ref: "Order",
     },
     text: {
       type: String,

@@ -7,8 +7,8 @@ export async function POST(req: NextRequest) {
   try {
     await connectDb();
 
-    const { senderId, text, roomId, time } = await req.json();
-    let room = await Order.findById({ roomId });
+    const { roomId } = await req.json();
+    let room = await Order.findById(roomId);
 
     if (!room) {
       return NextResponse.json(
@@ -17,16 +17,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const message = await Message.create({
-      senderId,
-      text,
-      roomId,
-      time,
+    const messages = await Message.find({ roomId: room._id }).sort({
+      createdAt: 1,
     });
-    return NextResponse.json({ message }, { status: 200 });
+
+    return NextResponse.json(messages, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: `save message error${error}` },
+      { message: `get messages error${error}` },
       { status: 500 },
     );
   }
