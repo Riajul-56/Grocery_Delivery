@@ -2,13 +2,15 @@
 import { IUser } from "@/models/user.model";
 import { RootState } from "@/redux/store";
 import axios from "axios";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Send } from "lucide-react";
 import mongoose from "mongoose";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import { getSocket } from "@/lib/socket";
+import { AnimatePresence, motion } from "motion/react";
+import { IMassage } from "@/models/message.model";
 
 const LiveMap = dynamic(() => import("@/components/LiveMap"), {
   ssr: false,
@@ -119,6 +121,60 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
     return () => socket.off("update_deliveryBoy_location");
   }, [order]);
 
+  // =================== send message to the server start ===================//
+  const [newMessage, setNewMessage] = useState("");
+
+  // =================== send message to the server end ===================//
+
+  // =================== send message fetch start ===================//
+
+  const [messages, setMessages] = useState<IMassage[]>();
+  useEffect(() => {
+    const getAllMessages = async () => {
+      try {
+        const result = await axios.post("/api/chat/messages", {
+          roomId: orderId,
+        });
+        setMessages(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAllMessages();
+  }, []);
+
+  // =================== send message fetch end ===================//
+
+  useEffect(() => {
+    const socket = getSocket();
+    socket.emit("joinRoom", orderId);
+  }, []);
+
+  // =================== send message to the server start ===================//
+
+  const sendMsg = () => {
+    const socket = getSocket();
+
+    const message = {
+      roomId: orderId,
+      text: newMessage,
+      senderId: userData?._id,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    socket.emit("sendMessage", message);
+    socket.on("sendMessage", (message) => {
+      if (message.roomId === orderId) {
+        setMessages((prev) => [...prev!, message]);
+      }
+    });
+    setNewMessage("");
+  };
+
+  // =================== send message to the server end ===================//
+
   return (
     <div className="w-full min-h-screen bg-linear-to-b from-green-50 to-white ">
       <div className="max-w-2xl mx-auto pb-24">
@@ -146,7 +202,7 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         {/* ================== header part end ===================== */}
 
         {/* ================== map part start ===================== */}
-        <div className="px-4 mt-20">
+        <div className="px-4 mt-20 ">
           <div className="rounded-3xl overflow-hidden border shadow">
             {userLocation.latitude !== 0 && userLocation.longitude !== 0 ? (
               <LiveMap
@@ -161,6 +217,71 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
           </div>
         </div>
         {/* ================== map part end ===================== */}
+
+        {/* ============= message box start ================== */}
+
+        <div className="bg-white rounded-2xl shadow-lg border p-4 h-107.5 flex flex-col mt-4">
+          {/* ================= show messages start ==================== */}
+
+          <div className="flex-1 overflow-y-auto p-2 space-y-3 ">
+            <AnimatePresence>
+              {messages?.map((msg, index) => (
+                <motion.div
+                  className={`flex ${msg.senderId == userData?._id ? "justify-end" : "justify-start"}`}
+                  key={msg._id?.toString()}
+                  initial={{
+                    opacity: 0,
+                    y: 15,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.2,
+                  }}
+                  exit={{ opacity: 0 }}
+                >
+                  <div
+                    className={`px-4 py-2 max-w-[75%] rounded-2xl shadow 
+                ${
+                  msg.senderId === userData?._id
+                    ? "bg-green-600 text-white rounded-br-none"
+                    : "bg-gray-100 text-gray-800 rounded-bl-none"
+                }
+                `}
+                  >
+                    <p>{msg.text}</p>
+
+                    <p className="text-[10px] opacity-70 mt-1 text-right ">
+                      {msg.time}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+          {/* ================= show messages end ==================== */}
+
+          <div className="flex gap-2 mt-3 border-t pt-3">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              className="flex-1 bg-gray-100 px-4 py-2 rounded-xl outline-none focus:ring-2 focus:ring-green-500 "
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+
+            <button
+              className="bg-green-600 hover:bg-green-700 p-3 rounded-xl text-white "
+              onClick={sendMsg}
+            >
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* ============= message box start ================== */}
       </div>
     </div>
   );

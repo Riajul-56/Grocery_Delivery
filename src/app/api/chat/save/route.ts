@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     await connectDb();
 
     const { senderId, text, roomId, time } = await req.json();
-    let room = await Order.findById({ roomId });
+    let room = await Order.findById(roomId);
 
     if (!room) {
       return NextResponse.json(
