@@ -130,7 +130,7 @@ const DeliveryBoyDashBoard = () => {
 
   if (activeOrder && userLocation) {
     return (
-      <div className="p-4 min-h-screen bg-gray-50 pt-37.5">
+      <div className="p-4 min-h-screen bg-gray-50 mt-37.5">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold text-green-700 mb-2">
             Active Delivery

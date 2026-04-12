@@ -161,7 +161,7 @@ const Navbar = ({ user }: { user: IUser }) => {
   //  ======================== Side Bar for admin End ===================== //
 
   return (
-    <div className="w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-green-500 to-green-700 rounded-2xl shadow-lg shadow-black/30 flex justify-between items-center h-20 px-4 md:px-8 z-50">
+    <div className="w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-green-500 to-green-700 rounded-2xl shadow-lg shadow-black/30 flex justify-between items-center h-20 px-4 md:px-8 z-999">
       {/* ============== Snapcart Icon for Navbar ========================== */}
 
       <Link
