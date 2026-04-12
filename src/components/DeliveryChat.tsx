@@ -149,7 +149,7 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
         <AnimatePresence>
           {messages?.map((msg, index) => (
             <motion.div
-              className={flex ${msg.senderId == deliveryBoyId ? "justify-end" : "justify-start"}}
+              className={`flex ${msg.senderId == deliveryBoyId ? "justify-end" : "justify-start"}`}
               key={msg._id?.toString()}
               initial={{
                 opacity: 0,
