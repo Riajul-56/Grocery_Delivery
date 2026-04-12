@@ -66,3 +66,47 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
     };
     getAllMessages();
   }, []);
+    // =================== send messagefetch end ===================//
+
+  // =================== Auto scroll message start ===================//
+
+  const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatBoxRef.current?.scrollTo({
+      top: chatBoxRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  // =================== Auto scroll message end ===================//
+
+  // =================== AI message fetch start ===================//
+
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getSuggestions = async () => {
+    setLoading(true);
+    try {
+      const lastMessage = messages
+        ?.filter((m) => m.senderId !== deliveryBoyId)
+        ?.at(-1);
+
+      const result = await axios.post("/api/chat/ai_suggestions", {
+        message: lastMessage?.text,
+        role: "delivery_boy",
+      });
+
+      setSuggestions(result.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  // =================== AI message fetch end ===================//
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border p-4 h-107.5 flex flex-col"></div>
