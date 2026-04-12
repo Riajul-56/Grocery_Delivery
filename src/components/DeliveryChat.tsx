@@ -110,3 +110,33 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border p-4 h-107.5 flex flex-col"></div>
+     {/* ================= AI suggestion start ==================== */}
+
+      <div className="flex justify-between items-center mb-3">
+        <span className="font-semibold text-gray-700 text-sm">
+          Quick Replies
+        </span>
+
+        <motion.button
+          className="px-3 py-1 text-xs flex items-center gap-1 bg-purple-100 text-purple-700 rounded-full cursor-pointer shadow-sm border border-purple-200"
+          onClick={getSuggestions}
+          whileTap={{ scale: 0.9 }}
+          disabled={loading}
+        >
+          <Sparkle size={14} />{" "}
+          {loading ? <Loader className="w-5 h-5 animate-spin" /> : "AI Suggest"}
+        </motion.button>
+      </div>
+
+      <div className="flex gap-2 flex-wrap mb-3">
+        {suggestions.map((s, i) => (
+          <motion.div
+            key={s}
+            whileTap={{ scale: 0.9 }}
+            className="px-3 py-1 text-xs bg-green-50 border border-green-200 text-green-700 rounded-full cursor-pointer shadow-sm"
+            onClick={() => setNewMessage(s)}
+          >
+            {s}
+          </motion.div>
+        ))}
+      </div>
