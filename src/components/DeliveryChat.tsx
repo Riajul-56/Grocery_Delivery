@@ -18,6 +18,14 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
   useEffect(() => {
     const socket = getSocket();
     socket.emit("joinRoom", orderId);
+    socket.on("sendMessage", (message) => {
+      if (message.roomId === orderId) {
+        setMessages((prev) => [...prev!, message]);
+      }
+    });
+    return () => {
+      socket.off("sendMessage");
+    };
   }, []);
 
   // =================== send message to the server start ===================//
@@ -35,11 +43,7 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
       }),
     };
     socket.emit("sendMessage", message);
-    socket.on("sendMessage", (message) => {
-      if (message.roomId === orderId) {
-        setMessages((prev) => [...prev!, message]);
-      }
-    });
+
     setNewMessage("");
   };
 

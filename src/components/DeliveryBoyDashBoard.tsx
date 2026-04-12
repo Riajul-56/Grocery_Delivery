@@ -170,10 +170,10 @@ const DeliveryBoyDashBoard = () => {
     <div className="w-full min-h-screen bg-gray-50 p-4">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mt-30 mb-7.5">Delivery Assignment</h2>
-        {assignment.map((a) => (
+        {assignment.map((a, index) => (
           <div
             className="p-5 bg-white rounded-xl shadow mb-4 border"
-            key={a._id}
+            key={index}
           >
             {/* ================ order ID start ==================== */}
 
