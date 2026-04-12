@@ -111,7 +111,6 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
   useEffect((): any => {
     const socket = getSocket();
     socket.on("update_deliveryBoy_location", (data) => {
-      console.log(location);
       setDeliveryBoyLocation({
         latitude: data.location.coordinates?.[1] ?? data.location.latitude,
         longitude: data.location.coordinates?.[0] ?? data.location.longitude,
