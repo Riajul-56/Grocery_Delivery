@@ -27,3 +27,42 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
       socket.off("sendMessage");
     };
   }, []);
+
+    // =================== send message to the server start ===================//
+
+  const sendMsg = () => {
+    const socket = getSocket();
+
+    const message = {
+      roomId: orderId,
+      text: newMessage,
+      senderId: deliveryBoyId,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    socket.emit("sendMessage", message);
+
+    setNewMessage("");
+  };
+
+  // =================== send message to the server end ===================//
+
+  // =================== send message fetch start ===================//
+
+  const [messages, setMessages] = useState<IMassage[]>();
+
+  useEffect(() => {
+    const getAllMessages = async () => {
+      try {
+        const result = await axios.post("/api/chat/messages", {
+          roomId: orderId,
+        });
+        setMessages(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAllMessages();
+  }, []);
