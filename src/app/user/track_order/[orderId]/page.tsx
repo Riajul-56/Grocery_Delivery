@@ -5,7 +5,7 @@ import axios from "axios";
 import { ArrowLeft, Send } from "lucide-react";
 import mongoose from "mongoose";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import { getSocket } from "@/lib/socket";
@@ -180,6 +180,19 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
 
   // =================== send message to the server end ===================//
 
+  // =================== Auto scroll message start ===================//
+
+  const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatBoxRef.current?.scrollTo({
+      top: chatBoxRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  // =================== Auto scroll message end ===================//
+
   return (
     <div className="w-full min-h-screen bg-linear-to-b from-green-50 to-white ">
       <div className="max-w-2xl mx-auto pb-24">
@@ -228,7 +241,10 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         <div className="bg-white rounded-2xl shadow-lg border p-4 h-107.5 flex flex-col mt-4">
           {/* ================= show messages start ==================== */}
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-3 ">
+          <div
+            className="flex-1 overflow-y-auto p-2 space-y-3 "
+            ref={chatBoxRef}
+          >
             <AnimatePresence>
               {messages?.map((msg, index) => (
                 <motion.div

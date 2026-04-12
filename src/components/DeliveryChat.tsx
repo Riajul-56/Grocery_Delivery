@@ -4,7 +4,7 @@ import axios from "axios";
 import { Send } from "lucide-react";
 import mongoose from "mongoose";
 import { AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 type props = {
@@ -69,11 +69,23 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
 
   // =================== send messagefetch end ===================//
 
+  // =================== Auto scroll message start ===================//
+  const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatBoxRef.current?.scrollTo({
+      top: chatBoxRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  // =================== Auto scroll message end ===================//
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border p-4 h-107.5 flex flex-col">
       {/* ================= show messages start ==================== */}
 
-      <div className="flex-1 overflow-y-auto p-2 space-y-3 ">
+      <div className="flex-1 overflow-y-auto p-2 space-y-3 " ref={chatBoxRef}>
         <AnimatePresence>
           {messages?.map((msg, index) => (
             <motion.div
