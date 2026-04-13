@@ -7,6 +7,7 @@ import { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LiveMap from "./LiveMap";
 import DeliveryChat from "./DeliveryChat";
+import { Loader } from "lucide-react";
 
 interface ILocation {
   latitude: number;
@@ -19,14 +20,14 @@ const DeliveryBoyDashBoard = () => {
 
   const [activeOrder, setActiveOrder] = useState<any>(null);
 
-  // ================= user location update functionality start ================== //
+  //? ================= user location update functionality start ================== //
 
   const [userLocation, setUserLocation] = useState<ILocation>({
     latitude: 0,
     longitude: 0,
   });
 
-  // ================= user location update  functionality end ================== //
+  //? ================= user location update  functionality end ================== //
 
   const fetchAssignment = async () => {
     try {
@@ -37,16 +38,16 @@ const DeliveryBoyDashBoard = () => {
     }
   };
 
-  // ================= delivery location update functionality start ================== //
+  //? ================= delivery location update functionality start ================== //
 
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState<ILocation>({
     latitude: 0,
     longitude: 0,
   });
 
-  // ================= delivery location update  functionality end ================== //
+  //? ================= delivery location update  functionality end ================== //
 
-  // ================= geo update functionality start ================== //
+  //? ================= geo update functionality start ================== //
   useEffect(() => {
     const socket = getSocket();
     if (!userData?._id) return;
@@ -75,9 +76,9 @@ const DeliveryBoyDashBoard = () => {
     return () => navigator.geolocation.clearWatch(watcher);
   }, [userData?._id]);
 
-  // ================= geo update functionality start ================== //
+  //? ================= geo update functionality start ================== //
 
-  // ================= status change functionality start ================== //
+  //? ================= status change functionality start ================== //
 
   useEffect((): any => {
     const socket = getSocket();
@@ -87,9 +88,9 @@ const DeliveryBoyDashBoard = () => {
     return () => socket.off("new-assignment");
   }, []);
 
-  // ================= status change functionality end ================== //
+  //? ================= status change functionality end ================== //
 
-  // ================ accept order start ============================//
+  //? ================ accept order start ============================//
 
   const handleAccept = async (id: string) => {
     try {
@@ -102,9 +103,9 @@ const DeliveryBoyDashBoard = () => {
     }
   };
 
-  // ================ accept order end ============================//
+  //? ================ accept order end ============================//
 
-  // ================ current order start ============================//
+  //? ================ current order start ============================//
 
   const fetchCurrentOrder = async () => {
     try {
@@ -121,7 +122,48 @@ const DeliveryBoyDashBoard = () => {
     }
   };
 
-  // ================ current order end ============================//
+  //? ================ current order end ============================//
+
+  //? ================ delivery boy OTP function Start ============================ //
+
+  const [showOtpBox, setShowOtpBox] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [sendOtpLoading, setSendOtpLoading] = useState(false);
+  const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
+
+  const sendOtp = async () => {
+    setSendOtpLoading(true);
+    try {
+      const result = await axios.post("/api/delivery/otp/send", {
+        orderId: activeOrder.order._id,
+      });
+      console.log(result.data);
+      setShowOtpBox(true);
+      setSendOtpLoading(false);
+    } catch (error) {
+      console.log(error);
+      setSendOtpLoading(false);
+    }
+  };
+
+  const verifyOtp = async () => {
+    setVerifyOtpLoading(true);
+    try {
+      const result = await axios.post("/api/delivery/otp/verify", {
+        orderId: activeOrder.order._id,
+        otp,
+      });
+      console.log(result.data);
+      setActiveOrder(null);
+      setVerifyOtpLoading(false);
+      await fetchCurrentOrder();
+    } catch (error) {
+      setOtpError("OTP verification Error");
+      setVerifyOtpLoading(false);
+    }
+  };
+  //? ================ delivery boy OTP function End ============================ //
 
   useEffect(() => {
     fetchCurrentOrder();
@@ -160,7 +202,59 @@ const DeliveryBoyDashBoard = () => {
             deliveryBoyId={userData?._id!}
           />
 
-          {/* ================ delivery boy cha End ============================ */}
+          {/* ================ delivery boy chat End ============================ */}
+
+          {/* ================ delivery boy OTP End ============================ */}
+
+          <div className="mt-6 bg-white rounded-xl border shadow p-6">
+            {!activeOrder.order.deliveryOtpVerification && !showOtpBox && (
+              <button
+                className="w-full py-4 bg-green-600 text-center text-white cursor-pointer rounded-lg"
+                onClick={sendOtp}
+              >
+                {sendOtpLoading ? (
+                  <Loader size={16} className="animate-spin text-white" />
+                ) : (
+                  "Mark as Delivered"
+                )}
+              </button>
+            )}
+
+            {showOtpBox && (
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="Enfer OTP"
+                  maxLength={4}
+                  onChange={(e) => setOtp(e.target.value)}
+                  value={otp}
+                  className="w-full py-3 border rounded-lg text-center"
+                />
+                <button
+                  className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg cursor-pointer text-center"
+                  onClick={verifyOtp}
+                >
+                  {verifyOtpLoading ? (
+                    <Loader size={16} className="animate-spin text-white" />
+                  ) : (
+                    "Verify OTP"
+                  )}{" "}
+                </button>
+
+                {otpError && (
+                  <div className="text-red-600 mt-2">{otpError}</div>
+                )}
+              </div>
+            )}
+
+            {activeOrder.order.deliveryOtpVerification && (
+              <div className="text-green-700 text-center font-bold">
+                Delivery Completed!
+              </div>
+            )}
+          </div>
+
+          {/* ================ delivery boy OTP End ============================ */}
         </div>
       </div>
     );
