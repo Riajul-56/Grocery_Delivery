@@ -1,16 +1,55 @@
 "use client";
-import { IOrder } from "@/models/order.model";
 import axios from "axios";
 import { ArrowLeft, Package, PackageSearch, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import UserOrderCard from "@/components/UserOrderCard";
+import { getSocket } from "@/lib/socket";
+import mongoose from "mongoose";
+import { IUser } from "@/models/user.model";
+
+interface IOrder {
+  _id?: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
+  items: [
+    {
+      grocery: mongoose.Types.ObjectId;
+      name: string;
+      price: string;
+      unit: string;
+      image: string;
+      quantity: number;
+    },
+  ];
+
+  isPaid?: boolean;
+  totalAmount: number;
+  paymentMethod: "cod" | "online";
+  address: {
+    fullName: string;
+    city: string;
+    state: string;
+    country: string;
+    postCode: string;
+    fullAddress: string;
+    mobile: string;
+    latitude: number;
+    longitude: number;
+  };
+
+  assignedDeliveryBoy?: IUser;
+  assignment?: mongoose.Types.ObjectId;
+  status: "pending" | "out of delivery" | "delivered";
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const MyOrder = () => {
   const router = useRouter();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const getMyOrders = async () => {
       try {
@@ -22,6 +61,20 @@ const MyOrder = () => {
       }
     };
     getMyOrders();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    socket.on("order-assigned", ({ orderId, assignedDeliveryBoy }) => {
+      setOrders((prev) =>
+        prev?.map((o) =>
+          o._id === orderId ? { ...o, assignedDeliveryBoy } : o,
+        ),
+      );
+    });
+    return () => {
+      socket.off("order-assigned");
+    };
   }, []);
 
   if (loading) {
@@ -65,7 +118,7 @@ const MyOrder = () => {
           </div>
         ) : (
           <div className="mt-4 space-y-6">
-            {orders.map((order:any, index) => (
+            {orders.map((order: any, index) => (
               <motion.div
                 key={index}
                 initial={{

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import connectDb from "@/lib/db";
+import emitEventHandler from "@/lib/emitEventHandler";
 import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,6 +47,7 @@ export async function GET(
     }
 
     // =========== if all ok then assigned a delivery boy ============ //
+
     assignment.assignedTo = deliveryBoyId;
     assignment.status = "assigned";
     assignment.acceptedAt = new Date();
@@ -59,7 +61,15 @@ export async function GET(
     order.assignedDeliveryBoy = deliveryBoyId;
     await order.save();
 
+    await order.populate("assignedDeliveryBoy");
+
+    await emitEventHandler("order-assigned", {
+      orderId: order._id,
+      assignedDeliveryBoy: order.assignedDeliveryBoy,
+    });
+
     // =========== when delivery boy assigned any other order then if user orderd new iten then this delivery boy id not show =========== //
+
     await DeliveryAssignment.updateMany(
       {
         _id: { $ne: assignment._id },
