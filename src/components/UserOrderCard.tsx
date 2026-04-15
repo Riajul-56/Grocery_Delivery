@@ -62,7 +62,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
   const [expended, setExpended] = useState(false);
   // ================== item toggle functionality end ========================//
 
-  // ============== order status change function start ================ //
+  // ============== order status update function start ================ //
 
   const [status, setStatus] = useState(order.status);
 
@@ -76,7 +76,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
     return () => socket.off("order-status-update");
   }, []);
 
-  // ============== order status change function end ================ //
+  // ============== order status update function end ================ //
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -130,15 +130,17 @@ function UserOrderCard({ order }: { order: IOrder }) {
         {/* ======================== Paid Or Unpaid Start ============================ */}
 
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`px-3 py-2 text-xs font-semibold rounded-full border ${
-              order.isPaid
-                ? "bg-green-100 text-green-700 border-green-300"
-                : "bg-red-100 text-red-700 border-red-300"
-            }`}
-          >
-            {order.isPaid ? "Paid" : "Unpaid"}
-          </span>
+          {status !== "delivered" && (
+            <span
+              className={`px-3 py-2 text-xs font-semibold rounded-full border ${
+                order.isPaid
+                  ? "bg-green-100 text-green-700 border-green-300"
+                  : "bg-red-100 text-red-700 border-red-300"
+              }`}
+            >
+              {order.isPaid ? "Paid" : "Unpaid"}
+            </span>
+          )}
 
           <span
             className={`px-3 py-1 text-xs font-semibold border rounded-full ${getStatusColor(status)}`}
@@ -149,162 +151,170 @@ function UserOrderCard({ order }: { order: IOrder }) {
       </div>
       {/* ======================== Paid Or Unpaid End ============================ */}
 
-      <div className="p-5 space-y-4">
-        {/* ======================== Payment Method start ============================ */}
+      {status !== "delivered" && (
+        <div className="p-5 space-y-4">
+          {/* ======================== Payment Method start ============================ */}
 
-        {order.paymentMethod == "cod" ? (
-          <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <Scooter size={16} className="text-green-600" />
-            Cash On Delivery
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <CreditCard size={16} className="text-green-600" />
-            Online Payment
-          </div>
-        )}
-        {/* ======================== Payment Method End ============================ */}
-
-        {/* ============== show assigned delivery boy start ============= */}
-
-        {order.assignedDeliveryBoy && (
-          <>
-            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3 text-sm text-gray-700">
-                <UserCheck className="text-blue-600" size={18} />
-                <div className="font-semibold text-gray-800 ">
-                  <p className="text-xs text-gray-600">
-                    Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
-                  </p>
-                  <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
-                    <PhoneCall className="text-red-600" /> +880{" "}
-                    {order.assignedDeliveryBoy.mobile}
-                  </p>
-                </div>
-              </div>
-              <a
-                href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
-                className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
-              >
-                Call
-              </a>
+          {order.paymentMethod == "cod" ? (
+            <div className="flex items-center gap-2 text-gray-700 text-sm">
+              <Scooter size={16} className="text-green-600" />
+              Cash On Delivery
             </div>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-700 text-sm">
+              <CreditCard size={16} className="text-green-600" />
+              Online Payment
+            </div>
+          )}
+          {/* ======================== Payment Method End ============================ */}
 
-            {/* ============== live tracking button start============= */}
+          {/* ============== show assigned delivery boy start ============= */}
 
+          {order.assignedDeliveryBoy && (
+            <>
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-sm text-gray-700">
+                  <UserCheck className="text-blue-600" size={18} />
+                  <div className="font-semibold text-gray-800 ">
+                    <p className="text-xs text-gray-600">
+                      Assigned to :{" "}
+                      <span>{order.assignedDeliveryBoy.name}</span>
+                    </p>
+                    <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
+                      <PhoneCall className="text-red-600" /> +880{" "}
+                      {order.assignedDeliveryBoy.mobile}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
+                  className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
+                >
+                  Call
+                </a>
+              </div>
+
+              {/* ============== live tracking button start============= */}
+
+              <button
+                className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer"
+                onClick={() =>
+                  router.push(`/user/track_order/${order._id?.toString()}`)
+                }
+              >
+                <Truck size={18} /> Track Your Order
+              </button>
+
+              {/* ============== live tracking button boy end============= */}
+            </>
+          )}
+
+          {/* ============== show assigned delivery boy end============= */}
+
+          {/* ======================== Address Start ============================ */}
+
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
+            <MapPin size={16} className="text-green-600" />
+            <span className="truncate">{order.address.fullAddress}</span>
+          </div>
+          {/* ======================== Address End ============================ */}
+
+          <div className="border-t border-gray-200 pt-3">
             <button
-              className="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-green-700 transition cursor-pointer"
-              onClick={() =>
-                router.push(`/user/track_order/${order._id?.toString()}`)
-              }
+              onClick={() => setExpended((prev) => !prev)}
+              className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
             >
-              <Truck size={18} /> Track Your Order
+              <span className="flex items-center gap-2">
+                <Package size={16} className="text-green-600" />
+                {expended
+                  ? "Hide Order Item"
+                  : `View ${order.items.length} Item`}
+              </span>
+              {expended ? (
+                <ChevronUp size={16} className="text-green-600" />
+              ) : (
+                <ChevronDown size={16} className="text-green-600" />
+              )}
             </button>
 
-            {/* ============== live tracking button boy end============= */}
-          </>
-        )}
+            <motion.div
+              className="overflow-hidden"
+              initial={{
+                opacity: 0,
+                height: 0,
+              }}
+              animate={{
+                opacity: expended ? 1 : 0,
+                height: expended ? "auto" : 0,
+              }}
+              transition={{
+                duration: 0.3,
+              }}
+            >
+              <div className="nt-3 space-y-3">
+                {order.items.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
+                  >
+                    {/* ========================= Left side item details start =========================== */}
 
-        {/* ============== show assigned delivery boy end============= */}
-
-        {/* ======================== Address Start ============================ */}
-
-        <div className="flex items-center gap-2 text-gray-700 text-sm">
-          <MapPin size={16} className="text-green-600" />
-          <span className="truncate">{order.address.fullAddress}</span>
-        </div>
-        {/* ======================== Address End ============================ */}
-
-        <div className="border-t border-gray-200 pt-3">
-          <button
-            onClick={() => setExpended((prev) => !prev)}
-            className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
-          >
-            <span className="flex items-center gap-2">
-              <Package size={16} className="text-green-600" />
-              {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
-            </span>
-            {expended ? (
-              <ChevronUp size={16} className="text-green-600" />
-            ) : (
-              <ChevronDown size={16} className="text-green-600" />
-            )}
-          </button>
-
-          <motion.div
-            className="overflow-hidden"
-            initial={{
-              opacity: 0,
-              height: 0,
-            }}
-            animate={{
-              opacity: expended ? 1 : 0,
-              height: expended ? "auto" : 0,
-            }}
-            transition={{
-              duration: 0.3,
-            }}
-          >
-            <div className="nt-3 space-y-3">
-              {order.items.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
-                >
-                  {/* ========================= Left side item details start =========================== */}
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={48}
-                      height={48}
-                      className=" rounded-lg object-cover border border-gray-200"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">
-                        {item.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {item.quantity} x {item.unit}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={48}
+                        height={48}
+                        className=" rounded-lg object-cover border border-gray-200"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">
+                          {item.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {item.quantity} x {item.unit}
+                        </p>
+                      </div>
                     </div>
+                    {/* ========================= Left side item details end =========================== */}
+
+                    {/* ========================= Right side item details start =========================== */}
+
+                    <p className="text-sm font-semibold text-gray-800">
+                      ৳ {Number(item.price) * item.quantity}
+                    </p>
+                    {/* ========================= Right side item details end =========================== */}
                   </div>
-                  {/* ========================= Left side item details end =========================== */}
+                ))}
 
-                  {/* ========================= Right side item details start =========================== */}
-                  <p className="text-sm font-semibold text-gray-800">
-                    ৳ {Number(item.price) * item.quantity}
-                  </p>
-                  {/* ========================= Right side item details end =========================== */}
-                </div>
-              ))}
+                <div></div>
+              </div>
+            </motion.div>
+          </div>
 
-              <div></div>
+          {/* ================ total amount start ======================== */}
+
+          <div className="border-t pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
+            <div className="flex items-center gap-2 text-gray-700 text-sm">
+              <Scooter className="text-green-600" size={16} />
+              <span>
+                Delivery :{" "}
+                <span className="text-green-700 font-semibold">
+                  {status}
+                </span>{" "}
+              </span>
             </div>
-          </motion.div>
-        </div>
 
-        {/* ================ total amount start ======================== */}
-        <div className="border-t pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
-          <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <Scooter className="text-green-600" size={16} />
-            <span>
-              Delivery :{" "}
-              <span className="text-green-700 font-semibold">
-                {status}
-              </span>{" "}
-            </span>
+            <div>
+              Total:{" "}
+              <span className="text-green-700 font-bold">
+                ৳ {order.totalAmount}
+              </span>
+            </div>
           </div>
-
-          <div>
-            Total:{" "}
-            <span className="text-green-700 font-bold">
-              ৳ {order.totalAmount}
-            </span>
-          </div>
+          {/* ================ total amount end ======================== */}
         </div>
-        {/* ================ total amount end ======================== */}
-      </div>
+      )}
     </motion.div>
   );
 }

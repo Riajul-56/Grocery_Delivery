@@ -97,7 +97,7 @@ const DeliveryBoyDashBoard = () => {
       const result = await axios.get(
         `/api/delivery/assignment/${id}/accept_assignment`,
       );
-      console.log(result);
+      fetchCurrentOrder();
     } catch (error) {
       console.log(error);
     }
@@ -204,7 +204,7 @@ const DeliveryBoyDashBoard = () => {
 
           {/* ================ delivery boy chat End ============================ */}
 
-          {/* ================ delivery boy OTP End ============================ */}
+          {/* ================ delivery boy OTP Start ============================ */}
 
           <div className="mt-6 bg-white rounded-xl border shadow p-6">
             {!activeOrder.order.deliveryOtpVerification && !showOtpBox && (
@@ -213,7 +213,10 @@ const DeliveryBoyDashBoard = () => {
                 onClick={sendOtp}
               >
                 {sendOtpLoading ? (
-                  <Loader size={16} className="animate-spin text-white" />
+                  <Loader
+                    size={16}
+                    className="animate-spin text-white text-center"
+                  />
                 ) : (
                   "Mark as Delivered"
                 )}
@@ -235,7 +238,10 @@ const DeliveryBoyDashBoard = () => {
                   onClick={verifyOtp}
                 >
                   {verifyOtpLoading ? (
-                    <Loader size={16} className="animate-spin text-white" />
+                    <Loader
+                      size={16}
+                      className="animate-spin text-white text-center"
+                    />
                   ) : (
                     "Verify OTP"
                   )}{" "}

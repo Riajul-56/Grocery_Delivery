@@ -1,4 +1,5 @@
 "use client";
+import { getSocket } from "@/lib/socket";
 import { IUser } from "@/models/user.model";
 import axios from "axios";
 import {
@@ -98,6 +99,20 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
   //================ Component UI =================//
 
+  // ============== order status update function start ================ //
+
+  useEffect((): any => {
+    const socket = getSocket();
+    socket.on("order-status-update", (data) => {
+      if (data.orderId.toString() == order?._id!.toString()) {
+        setStatus(data.status);
+      }
+    });
+    return () => socket.off("order-status-update");
+  }, []);
+
+  // ============== order status update function end ================ //
+
   return (
     <motion.div
       key={order._id?.toString()}
@@ -118,11 +133,9 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
       {/* ================= Card Header ================= */}
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-
         {/* ========= Left Section : Order Information ========= */}
 
         <div className="space-y-1">
-
           {/* Order ID */}
           <p className="text-lg font-bold flex items-center gap-2 text-green-700">
             <Package size={20} />
@@ -130,15 +143,17 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
           </p>
 
           {/* Payment Status */}
-          <span
-            className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border mt-2 ${
-              order.isPaid
-                ? "bg-green-100 text-green-700 border-green-300"
-                : "bg-red-100 text-red-700 border-red-300"
-            }`}
-          >
-            {order.isPaid ? "paid" : "Unpaid"}
-          </span>
+          {status !== "delivered" && (
+            <span
+              className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border mt-2 ${
+                order.isPaid
+                  ? "bg-green-100 text-green-700 border-green-300"
+                  : "bg-red-100 text-red-700 border-red-300"
+              }`}
+            >
+              {order.isPaid ? "paid" : "Unpaid"}
+            </span>
+          )}
 
           {/* Order Creation Time */}
           <p className="text-gray-500 text-sm mt-2 flex items-center gap-2">
@@ -148,7 +163,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
           {/* Customer Information */}
           <div className="nt-3 space-y-1 text-gray-700 text-sm">
-
             {/* Customer Name */}
             <p className="flex items-center gap-2 font-semibold">
               <User size={16} className="text-green-600" />
@@ -208,7 +222,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
         {/* ========= Right Section : Order Status ========= */}
 
         <div className="flex flex-col items-center md:items-end gap-2">
-
           {/* Status Badge */}
           <span
             className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
@@ -223,26 +236,27 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
           </span>
 
           {/* Status Change Dropdown */}
-          <select
-            className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
-            value={status}
-            onChange={(e) =>
-              updateStatus(order._id?.toString()!, e.target.value)
-            }
-          >
-            {statusOptions.map((st) => (
-              <option key={st} value={st}>
-                {st.toUpperCase()}
-              </option>
-            ))}
-          </select>
+          {status !== "delivered" && (
+            <select
+              className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
+              value={status}
+              onChange={(e) =>
+                updateStatus(order._id?.toString()!, e.target.value)
+              }
+            >
+              {statusOptions.map((st) => (
+                <option key={st} value={st}>
+                  {st.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
       {/* ================= Item List Section ================= */}
 
       <div className="border-t border-gray-200 mt-3 pt-3">
-
         {/* Toggle Item List Button */}
         <button
           onClick={() => setExpended((prev) => !prev)}
@@ -276,7 +290,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
           }}
         >
           <div className="nt-3 space-y-3">
-
             {/* Render Ordered Items */}
             {order.items.map((item, index) => (
               <div
@@ -284,7 +297,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                 className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
               >
                 <div className="flex items-center gap-3">
-
                   {/* Item Image */}
                   <Image
                     src={item.image}
@@ -319,7 +331,6 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
       {/* ================= Total Amount Section ================= */}
 
       <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
-
         {/* Delivery Status */}
         <div className="flex items-center gap-2 text-gray-700 text-sm">
           <Scooter className="text-green-600" size={16} />
