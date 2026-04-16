@@ -156,7 +156,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             </p>
           </div>
 
-{/*================ Payemt method =============*/}
+          {/*================ Payemt method =============*/}
 
           <p className="mt-3 flex items-center gap-2 text-sm text-gray-700 ">
             <CreditCard size={16} className="text-green-600" />
@@ -295,22 +295,28 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
           </div>
         </motion.div>
       </div>
-      
+      {/* ========================= Item details end =========================== */}
 
+      {/* ================ total amount start ======================== */}
+      <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
+        <div className="flex items-center gap-2 text-gray-700 text-sm">
+          <Scooter className="text-green-600" size={16} />
+          <span>
+            Delivery :{" "}
+            <span className="text-green-700 font-semibold">{status}</span>{" "}
+          </span>
+        </div>
 
-
-
-
+        <div>
+          Total:{" "}
+          <span className="text-green-700 font-bold">
+            ৳ {order.totalAmount}
+          </span>
+        </div>
+      </div>
       {/* ================ total amount end ======================== */}
     </motion.div>
   );
 };
 
 export default AdminOrderCard;
-
-
-
-
-
-
-
