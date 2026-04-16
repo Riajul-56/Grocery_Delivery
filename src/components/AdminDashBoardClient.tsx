@@ -1,322 +1,168 @@
 "use client";
-import { IUser } from "@/models/user.model";
-import axios from "axios";
-import {
-  ChevronDown,
-  ChevronUp,
-  CreditCard,
-  MapPin,
-  Package,
-  Phone,
-  PhoneCall,
-  Scooter,
-  Timer,
-  User,
-  UserCheck,
-} from "lucide-react";
-import mongoose, { set } from "mongoose";
+
+import { DollarSign, Package, Truck, Users } from "lucide-react";
 import { motion } from "motion/react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+} from "recharts";
 
-//========== delivery boy assigned show fuction start ===============//
-
-interface IOrder {
-  _id?: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
-  items: [
-    {
-      grocery: mongoose.Types.ObjectId;
-      name: string;
-      price: string;
-      unit: string;
-      image: string;
-      quantity: number;
-    },
-  ];
-
-  isPaid?: boolean;
-  totalAmount: number;
-  paymentMethod: "cod" | "online";
-  address: {
-    fullName: string;
-    city: string;
-    state: string;
-    country: string;
-    postCode: string;
-    fullAddress: string;
-    mobile: string;
-    latitude: number;
-    longitude: number;
+type PropType = {
+  earning: {
+    today: number;
+    sevenDays: number;
+    total: number;
   };
+  stats: {
+    title: string;
+    value: number;
+  }[];
+  chartData: {
+    day: string;
+    orders: number;
+  }[];
+};
 
-  assignedDeliveryBoy?: IUser;
-  assignment?: mongoose.Types.ObjectId;
-  status: "pending" | "out of delivery" | "delivered";
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-//========== delivery boy assigned show fuction end ===============//
+const AdminDashBoardClient = ({ earning, stats, chartData }: PropType) => {
+  const [filter, setFilter] = useState<"today" | "sevenDays" | "total">();
 
-const AdminOrderCard = ({ order }: { order: IOrder }) => {
-  const statusOptions = ["pending", "out of delivery"];
-  const [expended, setExpended] = useState(false);
+  const currentEarning =
+    filter === "today"
+      ? earning.today
+      : filter === "sevenDays"
+        ? earning.sevenDays
+        : earning.total;
 
-  //========== Update order status functionality start ===============//
-
-  const [status, setStatus] = useState<string>("pending");
-
-  const updateStatus = async (orderId: string, status: string) => {
-    try {
-      const result = await axios.post(
-        `/api/admin/update_order_status/${orderId}`,
-        { status },
-      );
-      console.log(result.data);
-      setStatus(status);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    setStatus(order.status);
-  }, [order]);
-
-  //========== Update order status functionality end ===============//
+  const title =
+    filter === "today"
+      ? "Today's Earnings"
+      : filter === "sevenDays"
+        ? "Last 7 Days' Earnings"
+        : "Total Earnings";
 
   return (
-    <motion.div
-      key={order._id?.toString()}
-      className="bg-white shadow-md hover:shadow-lg border border-gray-100 rounded-2xl p-6 transition-all "
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        duration: 0.4,
-        delay: 0.3,
-      }}
-    >
-      {/* ============================= Card header Start =================================== */}
-
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-        {/* ================ card header left start ======================= */}
-
-        <div className="space-y-1">
-          {/*================ Order ID =============*/}
-
-          <p className="text-lg font-bold flex items-center gap-2 text-green-700">
-            <Package size={20} />
-            Order #{order._id?.toString().slice(-6)}
-          </p>
-
-          {/*================ Paid Or Unpaid =============*/}
-
-          <span
-            className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border mt-2 ${
-              order.isPaid
-                ? "bg-green-100 text-green-700 border-green-300"
-                : "bg-red-100 text-red-700 border-red-300"
-            }`}
-          >
-            {order.isPaid ? "paid" : "Unpaid"}
-          </span>
-
-          {/*================ Time =============*/}
-
-          <p className="text-gray-500 text-sm mt-2 flex items-center gap-2">
-            <Timer size={16} className="text-green-600" />
-            {new Date(order.createdAt!).toLocaleString()}
-          </p>
-
-          <div className="nt-3 space-y-1 text-gray-700 text-sm">
-            {/*================ Full Name =============*/}
-
-            <p className="flex items-center gap-2 font-semibold">
-              <User size={16} className="text-green-600" />
-              <span>{order?.address.fullName}</span>
-            </p>
-
-            {/*================ Mobile Number =============*/}
-
-            <p className="flex items-center gap-2 font-semibold">
-              <Phone size={16} className="text-green-600" />
-              <span>{order?.address.mobile}</span>
-            </p>
-
-            {/*================ Address =============*/}
-
-            <p className="flex items-center gap-2 font-semibold">
-              <MapPin size={16} className="text-green-600" />
-              <span>{order?.address.fullAddress}</span>
-            </p>
-          </div>
-
-          {/*================ Payemt method =============*/}
-
-          <p className="mt-3 flex items-center gap-2 text-sm text-gray-700 ">
-            <CreditCard size={16} className="text-green-600" />
-            <span>
-              {order.paymentMethod == "cod"
-                ? "Cash On Delivery"
-                : "Online Payment"}
-            </span>
-          </p>
-
-          {/* ============== show assigned delivery boy ============= */}
-
-          {order.assignedDeliveryBoy && (
-            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3 text-sm text-gray-700">
-                <UserCheck className="text-blue-600" size={18} />
-                <div className="font-semibold text-gray-800 ">
-                  <p className="text-xs text-gray-600">
-                    Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
-                  </p>
-                  <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
-                    <PhoneCall className="text-red-600" /> +880{" "}
-                    {order.assignedDeliveryBoy.mobile}
-                  </p>
-                </div>
-              </div>
-              <a
-                href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
-                className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
-              >
-                Call
-              </a>
-            </div>
-          )}
-        </div>
-        {/* ================ card header left End ======================= */}
-
-        {/* ================ card header Right Start ======================= */}
-
-        <div className="flex flex-col items-center md:items-end gap-2">
-          {/* ================ Status Start =============== */}
-          <span
-            className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
-              status === "delivered"
-                ? "bg-green-100 text-green-700"
-                : status == "pending"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-blue-100 text-blue-700"
-            }`}
-          >
-            {status}
-          </span>
-
-          <select
-            className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
-            value={status}
-            onChange={(e) =>
-              updateStatus(order._id?.toString()!, e.target.value)
-            }
-          >
-            {statusOptions.map((st) => (
-              <option key={st} value={st}>
-                {st.toUpperCase()}
-              </option>
-            ))}
-          </select>
-
-          {/* ================== Status End =============== */}
-        </div>
-        {/* ================ card header Right End ======================= */}
-      </div>
-
-      {/* ============================= Card header End =================================== */}
-
-      {/* =========================  Item details start =========================== */}
-
-      <div className="border-t border-gray-200 mt-3 pt-3">
-        <button
-          onClick={() => setExpended((prev) => !prev)}
-          className="w-full flex justify-between items-center text-sm font-medium text-gray-700 hover:text-green-600 transition cursor-pointer"
-        >
-          <span className="flex items-center gap-2">
-            <Package size={16} className="text-green-600" />
-            {expended ? "Hide Order Item" : `View ${order.items.length} Item`}
-          </span>
-          {expended ? (
-            <ChevronUp size={16} className="text-green-600" />
-          ) : (
-            <ChevronDown size={16} className="text-green-600" />
-          )}
-        </button>
-
-        <motion.div
-          className="overflow-hidden"
+    <div className="pt-28 w-[90%] md:w-[80%] mx-auto ">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10 text-center sm:text-left ">
+        <motion.h1
+          className="text-3xl md:text-4xl font-bold text-green-700 "
           initial={{
             opacity: 0,
-            height: 0,
+            y: 20,
           }}
           animate={{
-            opacity: expended ? 1 : 0,
-            height: expended ? "auto" : 0,
+            opacity: 1,
+            y: 0,
           }}
           transition={{
-            duration: 0.3,
+            duration: 0.5,
           }}
         >
-          <div className="nt-3 space-y-3">
-            {order.items.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center bg-gray-50 rounded-xl px-3 py-2 hover:bg-gray-100 transition mt-3"
-              >
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={48}
-                    height={48}
-                    className=" rounded-lg object-cover border border-gray-200"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {item.quantity} x {item.unit}
-                    </p>
-                  </div>
-                </div>
+          🏪 Admin Dashboard
+        </motion.h1>
 
-                <p className="text-sm font-semibold text-gray-800">
-                  ৳ {Number(item.price) * item.quantity}
+        <select
+          className="border border-gray-300 rounded-lg py-2 px-4 text-sm focus::ring-2 focus:ring-green-500 outline-none transition w-full sm:w-auto cursor-pointer"
+          onChange={(e) => setFilter(e.target.value as any)}
+          value={filter}
+        >
+          <option value="total">Total</option>
+          <option value="sevenDays">Last 7 Days</option>
+          <option value="today">Today</option>
+        </select>
+      </div>
+
+      {/*=================== Earnings Section ======================= */}
+
+      <motion.div
+        className="bg-green-50 border border-green-200 shadow-sm rounded-2xl p-6 text-center mb-10"
+        initial={{
+          opacity: 0,
+          y: 15,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.3,
+        }}
+      >
+        <h2 className="text-lg font-semibold text-green-700 mb-2">{title}</h2>
+        <h2 className="text-4xl font-semibold text-green-800">
+          ৳{currentEarning.toLocaleString()}
+        </h2>
+      </motion.div>
+
+      {/*=================== Earnings Section ======================= */}
+
+      {/*================== Stats Cards start ================== */}
+
+      <div className="grid grid-col-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 ">
+        {stats.map((s, i) => {
+          const icons = [
+            <Package key="p" className="text-green-700 w-6 h-6" />,
+            <Users key="u" className="text-green-700 w-6 h-6" />,
+            <Truck key="t" className="text-green-700 w-6 h-6" />,
+            <DollarSign key="b " className="text-green-700 w-6 h-6" />,
+          ];
+          return (
+            <motion.div
+              className="bg-white border border-gray-100 shadow-md rounded-2xl p-5 flex items-center gap-4 hover:shadow-lg transition-all"
+              key={i}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: i * 0.1,
+              }}
+            >
+              <div className="bg-green-100 p-3 rounded-xl">{icons[i]}</div>
+
+              <div>
+                <p className="text-gray-600 text-sm">{s.title}</p>
+                <p
+                  className="text-2xl font-bold text-gray-800
+                "
+                >
+                  {s.value}
                 </p>
               </div>
-            ))}
-          </div>
-        </motion.div>
+            </motion.div>
+          );
+        })}
       </div>
-      {/* ========================= Item details end =========================== */}
 
-      {/* ================ total amount start ======================== */}
-      <div className="border-t mt-3 pt-3 flex justify-between items-center text-sm font-semibold text-gray-800">
-        <div className="flex items-center gap-2 text-gray-700 text-sm">
-          <Scooter className="text-green-600" size={16} />
-          <span>
-            Delivery :{" "}
-            <span className="text-green-700 font-semibold">{status}</span>{" "}
-          </span>
-        </div>
+      {/*================== Stats Cards end ================== */}
 
-        <div>
-          Total:{" "}
-          <span className="text-green-700 font-bold">
-            ৳ {order.totalAmount}
-          </span>
-        </div>
+      {/* ===================== orders reviews start =================== */}
+
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-md p-5 mb-10">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">
+          📈 Orders Overview ( Last 7 Days )
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+            <XAxis dataKey="day" />
+            <Tooltip />
+            <Bar dataKey="orders" fill="#16A34A" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-      {/* ================ total amount end ======================== */}
-    </motion.div>
+
+      {/* ===================== orders reviews start =================== */}
+    </div>
   );
 };
 
-export default AdminOrderCard;
+export default AdminDashBoardClient;
