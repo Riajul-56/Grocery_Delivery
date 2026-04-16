@@ -156,11 +156,73 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             </p>
           </div>
 
-          
+{/*================ Payemt method =============*/}
 
+          <p className="mt-3 flex items-center gap-2 text-sm text-gray-700 ">
+            <CreditCard size={16} className="text-green-600" />
+            <span>
+              {order.paymentMethod == "cod"
+                ? "Cash On Delivery"
+                : "Online Payment"}
+            </span>
+          </p>
 
+          {/* ============== show assigned delivery boy ============= */}
 
+          {order.assignedDeliveryBoy && (
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <UserCheck className="text-blue-600" size={18} />
+                <div className="font-semibold text-gray-800 ">
+                  <p className="text-xs text-gray-600">
+                    Assigned to : <span>{order.assignedDeliveryBoy.name}</span>
+                  </p>
+                  <p className="text-xs text-gray-600 flex gap-2 items-center mt-1">
+                    <PhoneCall className="text-red-600" /> +880{" "}
+                    {order.assignedDeliveryBoy.mobile}
+                  </p>
+                </div>
+              </div>
+              <a
+                href={`tel:+880${order.assignedDeliveryBoy.mobile}`}
+                className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition"
+              >
+                Call
+              </a>
+            </div>
+          )}
+        </div>
+        {/* ================ card header left End ======================= */}
 
+        {/* ================ card header Right Start ======================= */}
+
+        <div className="flex flex-col items-center md:items-end gap-2">
+          {/* ================ Status Start =============== */}
+          <span
+            className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
+              status === "delivered"
+                ? "bg-green-100 text-green-700"
+                : status == "pending"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-blue-100 text-blue-700"
+            }`}
+          >
+            {status}
+          </span>
+
+          <select
+            className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none"
+            value={status}
+            onChange={(e) =>
+              updateStatus(order._id?.toString()!, e.target.value)
+            }
+          >
+            {statusOptions.map((st) => (
+              <option key={st} value={st}>
+                {st.toUpperCase()}
+              </option>
+            ))}
+          </select>
 
           {/* ================== Status End =============== */}
         </div>
@@ -238,7 +300,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
 
 
-      
+
       {/* ================ total amount end ======================== */}
     </motion.div>
   );
