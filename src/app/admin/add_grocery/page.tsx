@@ -131,8 +131,10 @@ function AddGrocery() {
                 value={category}
               >
                 <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option value={cat}>{cat}</option>
+                {categories.map((cat, i) => (
+                  <option key={i} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -160,7 +162,7 @@ function AddGrocery() {
             </div>
           </div>
           {/* ====================== Select Unit End  ======================== */}
-          
+
           {/* ====================== Price start ======================== */}
           <div>
             <label
