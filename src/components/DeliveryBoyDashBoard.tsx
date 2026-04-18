@@ -270,14 +270,11 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
           <div className="mt-6 bg-white rounded-xl border shadow p-6">
             {!activeOrder.order.deliveryOtpVerification && !showOtpBox && (
               <button
-                className="w-full py-4 bg-green-600 text-center text-white cursor-pointer rounded-lg"
+                className="w-full py-4 bg-green-600 text-center text-white cursor-pointer rounded-lg flex items-center justify-center"
                 onClick={sendOtp}
               >
                 {sendOtpLoading ? (
-                  <Loader
-                    size={16}
-                    className="animate-spin text-white text-center"
-                  />
+                  <Loader size={16} className="animate-spin text-white" />
                 ) : (
                   "Mark as Delivered"
                 )}
@@ -295,14 +292,11 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
                   className="w-full py-3 border rounded-lg text-center"
                 />
                 <button
-                  className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg cursor-pointer text-center"
+                  className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg cursor-pointer  flex items-center justify-center"
                   onClick={verifyOtp}
                 >
                   {verifyOtpLoading ? (
-                    <Loader
-                      size={16}
-                      className="animate-spin text-white text-center"
-                    />
+                    <Loader size={16} className="animate-spin text-white " />
                   ) : (
                     "Verify OTP"
                   )}{" "}
