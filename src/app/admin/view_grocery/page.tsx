@@ -40,12 +40,15 @@ const ViewGrocery = () => {
   const [backendImage, setBackendImage] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<IGrocery[]>();
 
   useEffect(() => {
     const getGrocries = async () => {
       try {
         const result = await axios.get("/api/admin/get_groceries");
         setGroceries(result.data);
+        setFilter(result.data);
       } catch (error) {
         console.log(error);
       }
@@ -102,6 +105,18 @@ const ViewGrocery = () => {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = search.toLowerCase();
+    setFilter(
+      groceries?.filter(
+        (g) =>
+          g.name.toLowerCase().includes(q) ||
+          g.category.toLowerCase().includes(q),
+      ),
+    );
+  };
+
   return (
     <div className="pt-4 w-[95%] md:w-[85%] mx-auto pb-20 ">
       <motion.div
@@ -135,6 +150,7 @@ const ViewGrocery = () => {
 
       <motion.form
         className="flex items-center bg-white border border-gray-200 rounded-full px-5 py-3 shadow-sm mb-10 hover:shadow-lg transition-all max-w-lg mx-auto w-full"
+        onSubmit={handleSearch}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -142,15 +158,17 @@ const ViewGrocery = () => {
         <Search className="text-gray-500 w-5 h-5 mr-2" />
         <input
           type="text"
+          value={search}
           className="w-full outline-none text-gray-700 placeholder-gray-400"
           placeholder="Search by name or category..."
+          onChange={(e) => setSearch(e.target.value)}
         />
       </motion.form>
 
       {/* ==================== search form end ======================== */}
 
       <div className="space-y-4">
-        {groceries?.map((g, i) => (
+        {filter?.map((g, i) => (
           <motion.div
             className="bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-5 p-5 transition-all"
             key={i}
