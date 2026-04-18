@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import AdminDashBoard from "@/components/AdminDashBoard";
 import DeliveryBoydb from "@/components/DeliveryBoydb";
 import EditRoleMobile from "@/components/EditRoleMobile";
+import Footer from "@/components/Footer";
 import GeoUpdater from "@/components/GeoUpdater";
 import Navbar from "@/components/Navbar";
 import UserDashBoard from "@/components/UserDashBoard";
@@ -57,6 +58,7 @@ async function Home(props: {
       ) : (
         <DeliveryBoydb />
       )}
+      <Footer />
     </>
   );
 }
