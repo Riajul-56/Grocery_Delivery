@@ -2,12 +2,11 @@ import connectDb from "@/lib/db";
 import CategorySlider from "./CategorySlider";
 import GroceryItemCard from "./GroceryItemCard";
 import HeroSection from "./HeroSection";
-import Grocery from "@/models/grocery.model";
+import { IGrocery } from "@/models/grocery.model";
 
-async function UserDashBoard() {
+async function UserDashBoard({ groceryList }: { groceryList: IGrocery[] }) {
   await connectDb();
-  const groceries = await Grocery.find({});
-  const plainGrocery = JSON.parse(JSON.stringify(groceries));
+  const plainGrocery = JSON.parse(JSON.stringify(groceryList));
 
   return (
     <>

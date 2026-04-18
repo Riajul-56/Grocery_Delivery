@@ -21,6 +21,7 @@ import { signOut } from "next-auth/react";
 import { createPortal } from "react-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
 interface IUser {
   _id?: mongoose.Types.ObjectId; //? Optional ID field
@@ -38,6 +39,8 @@ const Navbar = ({ user }: { user: IUser }) => {
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { cartData } = useSelector((state: RootState) => state.cart);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -53,6 +56,17 @@ const Navbar = ({ user }: { user: IUser }) => {
   }, []);
 
   // ======================== Side Bar for admin Start ===================== //
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = search.trim();
+    if (!query) {
+      return router.push("/");
+    }
+    router.push(`/?q=${encodeURIComponent(query)}`);
+    setSearch("");
+    setSearchBarOpen(false);
+  };
 
   const sideBar = menuOpen
     ? createPortal(
@@ -174,12 +188,17 @@ const Navbar = ({ user }: { user: IUser }) => {
       {/* ============== search bar for user ========================== */}
 
       {user.role == "user" && (
-        <form className="hidden md:flex items-center bg-white rounded-full px-4 py-2 w-1/2 max-w-lg shadow-md">
+        <form
+          className="hidden md:flex items-center bg-white rounded-full px-4 py-2 w-1/2 max-w-lg shadow-md"
+          onSubmit={handleSearch}
+        >
           <Search className="text-gray-500 w-5 h-5 mr-2" />
           <input
             type="text"
             placeholder="Search groceries..."
             className="w-full outline-none text-gray-700 placeholder-gray-400"
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
         </form>
       )}
@@ -365,10 +384,12 @@ const Navbar = ({ user }: { user: IUser }) => {
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
               >
                 <Search className="text-gray-500 w-5 h-5 mr-2" />
-                <form className="grow">
+                <form className="grow" onSubmit={handleSearch}>
                   <input
                     type="text"
                     placeholder="Search groceries..."
+                    onChange={(e) => setSearch(e.target.value)}
+                    value={search}
                     className="w-full outline-none text-gray-700"
                   />
                 </form>
