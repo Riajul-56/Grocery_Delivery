@@ -7,11 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  context: { params: Promise<{ orderid: string }> },
+  context: { params: Promise<{ orderId: string }> },
 ) {
   try {
     await connectDb();
-    const { orderid: orderId } = await context.params;
+    const { orderId: orderId } = await context.params;
     const { status } = await req.json();
 
     const order = await Order.findById(orderId).populate("user");
