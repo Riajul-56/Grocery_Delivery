@@ -11,7 +11,6 @@ import {
   User,
   X,
 } from "lucide-react";
-import mongoose from "mongoose";
 import { AnimatePresence, scale } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,11 +23,11 @@ import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 
 interface IUser {
-  _id?: mongoose.Types.ObjectId; //? Optional ID field
+  _id?: string; 
   name: string;
   email: string;
   password?: string;
-  mobile?: string; //? optional mobile field
+  mobile?: string; 
   role: "user" | "admin" | "deliveryBoy";
   image?: string;
 }

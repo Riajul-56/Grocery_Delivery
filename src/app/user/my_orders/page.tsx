@@ -6,15 +6,14 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import UserOrderCard from "@/components/UserOrderCard";
 import { getSocket } from "@/lib/socket";
-import mongoose from "mongoose";
 import { IUser } from "@/models/user.model";
 
 interface IOrder {
-  _id?: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
+  _id?: string;
+  user: string;
   items: [
     {
-      grocery: mongoose.Types.ObjectId;
+      grocery: string;
       name: string;
       price: string;
       unit: string;
@@ -39,7 +38,7 @@ interface IOrder {
   };
 
   assignedDeliveryBoy?: IUser;
-  assignment?: mongoose.Types.ObjectId;
+  assignment?: string;
   status: "pending" | "out of delivery" | "delivered";
   createdAt?: Date;
   updatedAt?: Date;

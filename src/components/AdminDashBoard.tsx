@@ -1,4 +1,3 @@
-import React from "react";
 import AdminDashBoardClient from "./AdminDashBoardClient";
 import connectDb from "@/lib/db";
 import Order from "@/models/order.model";

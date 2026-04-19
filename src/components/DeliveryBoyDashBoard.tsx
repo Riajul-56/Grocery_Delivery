@@ -260,7 +260,7 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
 
           <DeliveryChat
             orderId={activeOrder.order._id}
-            deliveryBoyId={userData?._id!}
+            deliveryBoyId={userData?._id?.toString()!}
           />
 
           {/* ================ delivery boy chat End ============================ */}

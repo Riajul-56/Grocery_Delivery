@@ -15,7 +15,6 @@ import {
   User,
   UserCheck,
 } from "lucide-react";
-import mongoose, { set } from "mongoose";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -23,13 +22,13 @@ import { useEffect, useState } from "react";
 //================ Order Interface (Order Data Structure) =================//
 
 interface IOrder {
-  _id?: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
+  _id?: string;
+  user: string;
 
   // Ordered grocery items
   items: [
     {
-      grocery: mongoose.Types.ObjectId;
+      grocery: string;
       name: string;
       price: string;
       unit: string;
@@ -57,7 +56,7 @@ interface IOrder {
 
   // Assigned delivery boy information
   assignedDeliveryBoy?: IUser;
-  assignment?: mongoose.Types.ObjectId;
+  assignment?: string;
 
   // Order status
   status: "pending" | "out of delivery" | "delivered";

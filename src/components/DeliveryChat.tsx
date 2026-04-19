@@ -2,14 +2,13 @@ import { getSocket } from "@/lib/socket";
 import { IMassage } from "@/models/message.model";
 import axios from "axios";
 import { Loader, Send, Sparkle } from "lucide-react";
-import mongoose from "mongoose";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 type props = {
-  orderId: mongoose.Types.ObjectId;
-  deliveryBoyId: mongoose.Types.ObjectId;
+  orderId: string;
+  deliveryBoyId: string;
 };
 
 const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
@@ -91,7 +90,7 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
     setLoading(true);
     try {
       const lastMessage = messages
-        ?.filter((m) => m.senderId !== deliveryBoyId)
+        ?.filter((m) => m.senderId.toString() !== deliveryBoyId)
         ?.at(-1);
 
       const result = await axios.post("/api/chat/ai_suggestions", {
@@ -149,7 +148,7 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
         <AnimatePresence>
           {messages?.map((msg, index) => (
             <motion.div
-              className={`flex ${msg.senderId == deliveryBoyId ? "justify-end" : "justify-start"}`}
+              className={`flex ${msg.senderId.toString() == deliveryBoyId ? "justify-end" : "justify-start"}`}
               key={msg._id?.toString()}
               initial={{
                 opacity: 0,
@@ -167,7 +166,7 @@ const DeliveryChat = ({ orderId, deliveryBoyId }: props) => {
               <div
                 className={`px-4 py-2 max-w-[75%] rounded-2xl shadow 
                 ${
-                  msg.senderId === deliveryBoyId
+                  msg.senderId.toString() === deliveryBoyId
                     ? "bg-green-600 text-white rounded-br-none"
                     : "bg-gray-100 text-gray-800 rounded-bl-none"
                 }

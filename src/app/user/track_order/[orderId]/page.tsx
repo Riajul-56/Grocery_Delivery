@@ -3,7 +3,6 @@ import { IUser } from "@/models/user.model";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { ArrowLeft, Loader, Send, Sparkle } from "lucide-react";
-import mongoose from "mongoose";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,21 +11,12 @@ import { getSocket } from "@/lib/socket";
 import { AnimatePresence, motion } from "motion/react";
 import { IMassage } from "@/models/message.model";
 
-const LiveMap = dynamic(() => import("@/components/LiveMap"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
-      <p className="text-gray-500">Map loading...</p>
-    </div>
-  ),
-});
-
 interface IOrder {
-  _id?: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
+  _id?: string;
+  user: string;
   items: [
     {
-      grocery: mongoose.Types.ObjectId;
+      grocery: string;
       name: string;
       price: string;
       unit: string;
@@ -51,7 +41,7 @@ interface IOrder {
   };
 
   assignedDeliveryBoy?: IUser;
-  assignment?: mongoose.Types.ObjectId;
+  assignment?: string;
   status: "pending" | "out of delivery" | "delivered";
   createdAt?: Date;
   updatedAt?: Date;
@@ -61,6 +51,15 @@ interface ILocation {
   latitude: number;
   longitude: number;
 }
+
+const LiveMap = dynamic(() => import("@/components/LiveMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
+      <p className="text-gray-500">Map loading...</p>
+    </div>
+  ),
+});
 
 const TrackOrder = ({ params }: { params: { orderId: string } }) => {
   const { userData } = useSelector((state: RootState) => state.user);
@@ -89,18 +88,16 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
   useEffect(() => {
     const getOrder = async () => {
       try {
-        const result = await axios.get(`/api/user/get_order/${orderId}`);
+        const result = await axios.get(`/api/user/get-order/${orderId}`);
         setOrder(result.data);
         setUserLocation({
           latitude: result.data.address.latitude,
           longitude: result.data.address.longitude,
         });
-        if (result.data.assignedDeliveryBoy?.location?.coordinates) {
-          setDeliveryBoyLocation({
-            latitude: result.data.assignedDeliveryBoy.location.coordinates[1],
-            longitude: result.data.assignedDeliveryBoy.location.coordinates[0],
-          });
-        }
+        setDeliveryBoyLocation({
+          latitude: result.data.assignedDeliveryBoy.location.coordinates[1],
+          longitude: result.data.assignedDeliveryBoy.location.coordinates[0],
+        });
       } catch (error) {
         console.log(error);
       }
@@ -110,17 +107,18 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
 
   useEffect((): any => {
     const socket = getSocket();
-    socket.on("update_deliveryBoy_location", (data) => {
+    socket.on("update-deliveryBoy-location", (data) => {
+      console.log(location);
       setDeliveryBoyLocation({
         latitude: data.location.coordinates?.[1] ?? data.location.latitude,
         longitude: data.location.coordinates?.[0] ?? data.location.longitude,
       });
     });
-
-    return () => socket.off("update_deliveryBoy_location");
+    return () => socket.off("update-deliveryBoy-location");
   }, [order]);
 
   // =================== send message to the server start ===================//
+
   const [newMessage, setNewMessage] = useState("");
 
   // =================== send message to the server end ===================//

@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import mongoose from "mongoose";
 
 export interface IGrocery {
-  _id: mongoose.Types.ObjectId;
+  _id: string;
   name: string;
   category: string;
   price: string;
@@ -38,10 +37,7 @@ const cartSlice = createSlice({
     },
 
     // Increase quantity action, it finds the item in the cartData array by its _id and increases its quantity by 1
-    increaseQuantity: (
-      state,
-      action: PayloadAction<mongoose.Types.ObjectId>,
-    ) => {
+    increaseQuantity: (state, action: PayloadAction<string>) => {
       const item = state.cartData.find((i) => i._id == action.payload);
       if (item) {
         item.quantity = item.quantity + 1;
@@ -50,10 +46,7 @@ const cartSlice = createSlice({
     },
 
     // Decrease quantity action, it finds the item in the cartData array by its _id and decreases its quantity by 1. If the quantity becomes less than 1, it removes the item from the cartData array
-    decreaseQuantity: (
-      state,
-      action: PayloadAction<mongoose.Types.ObjectId>,
-    ) => {
+    decreaseQuantity: (state, action: PayloadAction<string>) => {
       const item = state.cartData.find((i) => i._id == action.payload);
       if (item?.quantity && item.quantity > 1) {
         item.quantity = item.quantity - 1;
@@ -64,7 +57,7 @@ const cartSlice = createSlice({
     },
 
     // Remove from cart action, it filters out the item from the cartData array by its _id
-    removeFromCart: (state, action: PayloadAction<mongoose.Types.ObjectId>) => {
+    removeFromCart: (state, action: PayloadAction<string>) => {
       state.cartData = state.cartData.filter((i) => i._id !== action.payload);
       cartSlice.caseReducers.calculateTotals(state);
     },
