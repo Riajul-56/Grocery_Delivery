@@ -55,13 +55,13 @@
 ### 🛒 Cart & Checkout
 
 <table>
-  <tr>
+  <tr className="flex flex-wrap">
     <td >
-      <img src="./screenshots/add_toCard.png" alt="Shopping Cart" width="100%" />
+      <img src="./screenshots/add_toCard.png" alt="Shopping Cart" />
       <p align="center"><em>Shopping Cart with Quantity Controls</em></p>
     </td>
     <td>
-      <img src="./screenshots/checkout.png" alt="Checkout Page" width="100%" />
+      <img src="./screenshots/checkout.png" alt="Checkout Page" />
       <p align="center"><em>Checkout with Payment Options</em></p>
     </td>
   </tr>
@@ -90,6 +90,7 @@
     </td>
   <td>
    <img src="./screenshots/adg.png" alt="Admin Orders" width="100%" />
+    <p align="center"><em>Add Grocery Management Panel</em></p>
   </td>
   </tr>
 </table>
@@ -110,7 +111,7 @@
     </td>
     <td >
       <img src="./screenshots/deliverydb.png" alt="Delivery Chat" width="100%" />
-      <p align="center"><em>In-App Chat with AI Reply Suggestions</em></p>
+      <p align="center"><em>Delivery Boy Dashboard</em></p>
     </td>
   </tr>
 </table>
