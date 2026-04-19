@@ -43,7 +43,7 @@
 
 <table>
   <tr>
-    <td width="50%">
+    <td >
       <img src="./screenshots/grocery.png" alt="Grocery Browse" width="100%" />
       <p align="center"><em>Browse Groceries by Category</em></p>
     </td>
@@ -56,11 +56,11 @@
 
 <table>
   <tr>
-    <td width="50%">
+    <td >
       <img src="./screenshots/add_toCard.png" alt="Shopping Cart" width="100%" />
       <p align="center"><em>Shopping Cart with Quantity Controls</em></p>
     </td>
-    <td width="50%">
+    <td>
       <img src="./screenshots/checkout.png" alt="Checkout Page" width="100%" />
       <p align="center"><em>Checkout with Payment Options</em></p>
     </td>
@@ -80,14 +80,17 @@
 
 <table>
   <tr>
-    <td width="60%">
+    <td >
       <img src="./screenshots/admindb.png" alt="Admin Dashboard" width="100%" />
       <p align="center"><em>Admin Dashboard with Revenue Analytics & Charts</em></p>
     </td>
-    <td width="40%">
+    <td>
       <img src="./screenshots/manage.png" alt="Admin Orders" width="100%" />
       <p align="center"><em>Order Management Panel</em></p>
     </td>
+  <td>
+   <img src="./screenshots/adg.png" alt="Admin Orders" width="100%" />
+  </td>
   </tr>
 </table>
 
@@ -97,12 +100,16 @@
 
 <table>
   <tr>
-    <td width="50%">
+    <td>
       <img src="./screenshots/map.png" alt="Delivery Dashboard" width="100%" />
       <p align="center"><em>Delivery Assignment Panel</em></p>
     </td>
-    <td width="50%">
+    <td >
       <img src="./screenshots/chat.png" alt="Delivery Chat" width="100%" />
+      <p align="center"><em>In-App Chat with AI Reply Suggestions</em></p>
+    </td>
+    <td >
+      <img src="./screenshots/deliverydb.png" alt="Delivery Chat" width="100%" />
       <p align="center"><em>In-App Chat with AI Reply Suggestions</em></p>
     </td>
   </tr>
@@ -114,11 +121,11 @@
 
 <table>
   <tr>
-    <td width="50%">
+    <td >
       <img src="./screenshots/signin.png" alt="Login Page" width="100%" />
       <p align="center"><em>Login — Email & Google OAuth</em></p>
     </td>
-    <td width="50%">
+    <td >
       <img src="./screenshots/register.png" alt="Register Page" width="100%" />
       <p align="center"><em>Register — With Role Selection</em></p>
     </td>
