@@ -1,0 +1,58 @@
+"use client";
+
+import L, { LatLngExpression } from "leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import React, { useEffect } from "react";
+
+// =========================== Marker Icon funcitionality start ======================= //
+const markerIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
+// =========================== Marker Icon funcitionality end ======================= //
+
+type props = {
+  position: [number, number];
+  setPosition: (pos: [number, number]) => void;
+};
+
+const CheckoutMap = ({ position, setPosition }: props) => {
+  const DraggableMarker: React.FC = () => {
+    const map = useMap();
+    useEffect(() => {
+      map.setView(position as LatLngExpression, 15, { animate: true });
+    });
+    return (
+      <Marker
+        icon={markerIcon}
+        position={position as LatLngExpression}
+        draggable={true}
+        eventHandlers={{
+          dragend: (e: L.LeafletEvent) => {
+            const marker = e.target as L.Marker;
+            const { lat, lng } = marker.getLatLng();
+            setPosition([lat, lng]);
+          },
+        }}
+      />
+    );
+  };
+
+  return (
+    <MapContainer
+      className="w-full h-full"
+      center={position as LatLngExpression}
+      zoom={13}
+      scrollWheelZoom={true}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <DraggableMarker />
+    </MapContainer>
+  );
+};
+
+export default CheckoutMap;

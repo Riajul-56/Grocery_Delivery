@@ -17,20 +17,15 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import L, { LatLngExpression } from "leaflet";
-import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
-import axios from "axios";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
 
-// =========================== Marker Icon funcitionality start ======================= //
-const markerIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
+import axios from "axios";
+import dynamic from "next/dynamic";
+
+const CheckoutMap = dynamic(() => import("@/components/CheckoutMap"), {
+  ssr: false,
 });
-// =========================== Marker Icon funcitionality end ======================= //
 
 // =========================== find user data start ======================= //
 const Checkout = () => {
@@ -56,6 +51,7 @@ const Checkout = () => {
 
   const handleSeachQuery = async () => {
     setSearching(true);
+    const { OpenStreetMapProvider } = await import("leaflet-geosearch");
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: searchQuery });
     if (results) {
@@ -88,27 +84,6 @@ const Checkout = () => {
       setAddress((prev) => ({ ...prev, mobile: userData?.mobile || "" }));
     }
   }, [userData]);
-
-  const DraggableMarker: React.FC = () => {
-    const map = useMap();
-    useEffect(() => {
-      map.setView(position as LatLngExpression, 15, { animate: true });
-    });
-    return (
-      <Marker
-        icon={markerIcon}
-        position={position as LatLngExpression}
-        draggable={true}
-        eventHandlers={{
-          dragend: (e: L.LeafletEvent) => {
-            const marker = e.target as L.Marker;
-            const { lat, lng } = marker.getLatLng();
-            setPosition([lat, lng]);
-          },
-        }}
-      />
-    );
-  };
 
   // =========================== auto address add functionality start ======================= //
   useEffect(() => {
@@ -417,18 +392,7 @@ const Checkout = () => {
 
             <div className="relative mt-6 h-82.5 rounded-xl overflow-hidden border border-gray-200 shadow-inner ">
               {position && (
-                <MapContainer
-                  className="w-full h-full"
-                  center={position as LatLngExpression}
-                  zoom={13}
-                  scrollWheelZoom={true}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <DraggableMarker />
-                </MapContainer>
+                <CheckoutMap position={position} setPosition={setPosition} />
               )}
 
               <motion.button
