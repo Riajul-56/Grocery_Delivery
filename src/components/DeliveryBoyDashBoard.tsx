@@ -29,14 +29,14 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
 
   const [activeOrder, setActiveOrder] = useState<any>(null);
 
-  //? ================= user location update functionality start ================== //
+  // ================= user location update functionality start ================== //
 
   const [userLocation, setUserLocation] = useState<ILocation>({
     latitude: 0,
     longitude: 0,
   });
 
-  //? ================= user location update  functionality end ================== //
+  // ================= user location update  functionality end ================== //
 
   const fetchAssignment = async () => {
     try {
@@ -47,16 +47,17 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
     }
   };
 
-  //? ================= delivery location update functionality start ================== //
+  // ================= delivery location update functionality start ================== //
 
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState<ILocation>({
     latitude: 0,
     longitude: 0,
   });
 
-  //? ================= delivery location update  functionality end ================== //
+  // ================= delivery location update  functionality end ================== //
 
-  //? ================= geo update functionality start ================== //
+  // ================= geo update functionality start ================== //
+
   useEffect(() => {
     const socket = getSocket();
     if (!userData?._id) return;
@@ -85,21 +86,24 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
     return () => navigator.geolocation.clearWatch(watcher);
   }, [userData?._id]);
 
-  //? ================= geo update functionality start ================== //
+  // ================= geo update functionality start ================== //
 
-  //? ================= status change functionality start ================== //
+  // ================= status change functionality start ================== //
 
   useEffect((): any => {
     const socket = getSocket();
-    socket.on("new-assignment", ({ deliveryAssignment }) => {
-      setAssignment((prev) => [...prev, deliveryAssignment]);
+    socket.on("update-deliveryBoy-location", ({ userId, location }) => {
+      setDeliveryBoyLocation({
+        latitude: location.coordinates[1],
+        longitude: location.coordinates[0],
+      });
     });
-    return () => socket.off("new-assignment");
+    return () => socket.off("update-deliveryBoy-location");
   }, []);
 
-  //? ================= status change functionality end ================== //
+  // ================= status change functionality end ================== //
 
-  //? ================ accept order start ============================//
+  // ================ accept order start ============================//
 
   const handleAccept = async (id: string) => {
     try {
@@ -112,9 +116,9 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
     }
   };
 
-  //? ================ accept order end ============================//
+  // ================ accept order end ============================//
 
-  //? ================ current order start ============================//
+  // ================ current order start ============================//
 
   const fetchCurrentOrder = async () => {
     try {
@@ -131,9 +135,9 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
     }
   };
 
-  //? ================ current order end ============================//
+  // ================ current order end ============================//
 
-  //? ================ delivery boy OTP function Start ============================ //
+  // ================ delivery boy OTP function Start ============================ //
 
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [otp, setOtp] = useState("");
@@ -173,7 +177,7 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
       setVerifyOtpLoading(false);
     }
   };
-  //? ================ delivery boy OTP function End ============================ //
+  // ================ delivery boy OTP function End ============================ //
 
   useEffect(() => {
     fetchCurrentOrder();
@@ -325,6 +329,7 @@ const DeliveryBoyDashBoard = ({ earning }: { earning: number }) => {
     <div className="w-full min-h-screen bg-gray-50 p-4">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mt-30 mb-7.5">Delivery Assignment</h2>
+
         {assignment.map((a, index) => (
           <div
             className="p-5 bg-white rounded-xl shadow mb-4 border"

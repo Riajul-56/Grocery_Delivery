@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { getSocket } from "@/lib/socket";
 import { AnimatePresence, motion } from "motion/react";
 import { IMassage } from "@/models/message.model";
+import LiveMap from "@/components/LiveMap";
 
 interface IOrder {
   _id?: string;
@@ -52,14 +53,14 @@ interface ILocation {
   longitude: number;
 }
 
-const LiveMap = dynamic(() => import("@/components/LiveMap"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
-      <p className="text-gray-500">Map loading...</p>
-    </div>
-  ),
-});
+// const LiveMap = dynamic(() => import("@/components/LiveMap"), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
+//       <p className="text-gray-500">Map loading...</p>
+//     </div>
+//   ),
+// });
 
 const TrackOrder = ({ params }: { params: { orderId: string } }) => {
   const { userData } = useSelector((state: RootState) => state.user);
@@ -88,7 +89,7 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
   useEffect(() => {
     const getOrder = async () => {
       try {
-        const result = await axios.get(`/api/user/get-order/${orderId}`);
+        const result = await axios.get(`/api/user/get_order/${orderId}`);
         setOrder(result.data);
         setUserLocation({
           latitude: result.data.address.latitude,
@@ -107,14 +108,14 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
 
   useEffect((): any => {
     const socket = getSocket();
-    socket.on("update-deliveryBoy-location", (data) => {
+    socket.on("update_deliveryBoy_location", (data) => {
       console.log(location);
       setDeliveryBoyLocation({
         latitude: data.location.coordinates?.[1] ?? data.location.latitude,
         longitude: data.location.coordinates?.[0] ?? data.location.longitude,
       });
     });
-    return () => socket.off("update-deliveryBoy-location");
+    return () => socket.off("update_deliveryBoy_location");
   }, [order]);
 
   // =================== send message to the server start ===================//
@@ -244,20 +245,16 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         {/* ================== header part end ===================== */}
 
         {/* ================== map part start ===================== */}
+
         <div className="px-4 mt-20 ">
           <div className="rounded-3xl overflow-hidden border shadow">
-            {userLocation.latitude !== 0 && userLocation.longitude !== 0 ? (
-              <LiveMap
-                userLocation={userLocation}
-                deliveryBoyLocation={deliveryBoyLocation}
-              />
-            ) : (
-              <div className="w-full h-125 flex items-center justify-center bg-gray-100 rounded-xl">
-                <p className="text-gray-500">Loading map...</p>
-              </div>
-            )}
+            <LiveMap
+              userLocation={userLocation}
+              deliveryBoyLocation={deliveryBoyLocation}
+            />
           </div>
         </div>
+
         {/* ================== map part end ===================== */}
 
         {/* ============= message box start ================== */}

@@ -1,4 +1,12 @@
-"use client";
+import React, { useEffect } from "react";
+interface ILocation {
+  latitude: number;
+  longitude: number;
+}
+interface Iprops {
+  userLocation: ILocation;
+  deliveryBoyLocation: ILocation;
+}
 import L, { LatLngExpression } from "leaflet";
 import {
   MapContainer,
@@ -8,45 +16,28 @@ import {
   TileLayer,
   useMap,
 } from "react-leaflet";
-import { useEffect } from "react";
 
-interface ILocation {
-  latitude: number;
-  longitude: number;
-}
-
-interface Iprops {
-  userLocation: ILocation;
-  deliveryBoyLocation: ILocation;
-}
-
-function Recenter({ lat, lng }: { lat: number; lng: number }) {
+function Recenter({ positions }: { positions: [number, number] }) {
   const map = useMap();
-
   useEffect(() => {
-    if (lat !== 0 && lng !== 0) {
-      map.setView([lat, lng], map.getZoom(), {
+    if (positions[0] !== 0 && positions[1] !== 0) {
+      map.setView(positions, map.getZoom(), {
         animate: true,
       });
     }
-  }, [lat, lng, map]);
-
+  }, [positions, map]);
   return null;
 }
 
 function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
-  const deliverBoyIcon = L.icon({
+  const deliveryBoyIcon = L.icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/128/9561/9561688.png",
     iconSize: [45, 45],
   });
-
   const userIcon = L.icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/128/4821/4821951.png",
     iconSize: [45, 45],
   });
-
-  const centerLat = deliveryBoyLocation?.latitude || userLocation.latitude;
-  const centerLng = deliveryBoyLocation?.longitude || userLocation.longitude;
 
   const linePositions =
     deliveryBoyLocation && userLocation
@@ -55,27 +46,28 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
           [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude],
         ]
       : [];
+  const center = deliveryBoyLocation
+    ? [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]
+    : [userLocation.latitude, userLocation.longitude];
 
   return (
-    <div className="w-full h-125 rounded-xl overflow-hidden shadow relative">
-      {/* ==================== Map Container start ==================== */}
+    <div className="w-full h-[500px] rounded-xl overflow-hidden shadow relative z-2">
       <MapContainer
-        className="w-full h-full"
-        center={[centerLat, centerLng] as LatLngExpression}
+        center={center as any}
         zoom={13}
         scrollWheelZoom={true}
+        className="w-full h-full"
       >
-        <Recenter lat={centerLat} lng={centerLng} />
+        <Recenter positions={center as any} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-
         <Marker
           position={[userLocation.latitude, userLocation.longitude]}
           icon={userIcon}
         >
-          <Popup>Delivery Address</Popup>
+          <Popup>delivery Address</Popup>
         </Marker>
 
         {deliveryBoyLocation && (
@@ -84,15 +76,13 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
               deliveryBoyLocation.latitude,
               deliveryBoyLocation.longitude,
             ]}
-            icon={deliverBoyIcon}
+            icon={deliveryBoyIcon}
           >
-            <Popup>Delivery Boy</Popup>
+            <Popup>delivery Boy</Popup>
           </Marker>
         )}
         <Polyline positions={linePositions as any} color="green" />
       </MapContainer>
-
-      {/* ==================== Map Container end ==================== */}
     </div>
   );
 }

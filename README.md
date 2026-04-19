@@ -33,18 +33,9 @@
 
 ---
 
-## 📸 Screenshots
-
-> **How to add your screenshots:**
->
-> 1. Create a folder named `screenshots` in your project root
-> 2. Take screenshots of your app pages
-> 3. Save them with the filenames shown below
-> 4. Push to GitHub — the images will appear automatically!
-
 ### 🏠 Homepage & Hero Section
 
-<img src="./screenshots/banner.png" alt="Homepage" width="100%" />
+<img src="./screenshots/Banner.png" alt="Homepage" width="100%" />
 
 ---
 
@@ -80,7 +71,7 @@
 
 ### 🗺️ Real-Time Order Tracking
 
-<img src="./screenshots/map.png" alt="Live Order Tracking Map" width="100%" />
+<img src="./screenshots/usermap.png" alt="Live Order Tracking Map" width="100%" />
 <p align="center"><em>Live GPS Tracking — Delivery Boy & Destination on Interactive Map</em></p>
 
 ---
@@ -210,7 +201,7 @@
 ┌──────────────────────┐      ┌───────────────────────────┐
 │   Next.js App Server  │      │   Socket.io Server         │
 │   (Port 3000)         │◄────►│   (Node.js / Express)      │
-│   App Router + API    │      │   (Port 5000)              │
+│   App Router + API    │      │   (Port 4000)              │
 └──────────┬───────────┘      └───────────────────────────┘
            │
     ┌──────┼──────────────┐
@@ -381,11 +372,11 @@ Socket_Server/
 
 ```bash
 # Main Next.js App
-git clone https://github.com/your-username/Grocery_Delivery.git
+git clone https://github.com/Riajul-56/Grocery_Delivery
 cd Grocery_Delivery
 
 # Socket Server
-git clone https://github.com/your-username/Socket_Server.git
+git clone https://github.com/Riajul-56/Socket_Server
 ```
 
 **2. Install dependencies**
@@ -417,7 +408,7 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # ── Socket Server ────────────────────────────────────
-NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
 NEXT_BASE_URL=http://localhost:3000
 
 # ── Cloudinary ───────────────────────────────────────
