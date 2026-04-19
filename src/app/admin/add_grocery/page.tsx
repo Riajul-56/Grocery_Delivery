@@ -155,8 +155,10 @@ function AddGrocery() {
                 value={unit}
               >
                 <option value="">Select Unit</option>
-                {units.map((cat) => (
-                  <option value={cat}>{cat}</option>
+                {units.map((cat, i) => (
+                  <option key={i} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
